@@ -22,7 +22,6 @@
     "test-browser": "shadow-cljs watch test-browser",
     "test-once": "shadow-cljs compile test",
     "clean": "rimraf public/js public/css",
-    "nuke": "rimraf public/js public/css .shadow-cljs node_modules yarn.lock package-lock.json out report.html",
     "shadow-cljs-server": "shadow-cljs server"
   },
   "devDependencies": {
