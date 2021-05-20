@@ -3,10 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "shadow-cljs watch app",
-    "watch-all": "shadow-cljs watch app test-browser",
-    "build": "shadow-cljs release app",
-    "build-verbose": "shadow-cljs release --verbose app",
+    "start": "npm run watch",
+    "watch-css": "npm run build-css -- --watch",
+    "watch-app": "shadow-cljs watch app",
+    "watch": "npm run watch-app & npm run watch-css",
+    "build-app": "shadow-cljs release app",
+    "build-app-verbose": "shadow-cljs release --verbose app",
+    "build-css": "node-sass public/scss --output public/css --output-style compressed",
+    "build": "npm run build-app && npm run build-css",
     "report": "shadow-cljs run shadow.cljs.build-report app report.html",
     "debug-build": "shadow-cljs release app --debug",
     "serve": "serve --single public --listen 5000",
@@ -17,11 +21,12 @@
     "test": "shadow-cljs watch test",
     "test-browser": "shadow-cljs watch test-browser",
     "test-once": "shadow-cljs compile test",
-    "clean": "rimraf public/js",
-    "nuke": "rimraf public/js .shadow-cljs node_modules yarn.lock package-lock.json out report.html",
+    "clean": "rimraf public/js public/css",
+    "nuke": "rimraf public/js public/css .shadow-cljs node_modules yarn.lock package-lock.json out report.html",
     "shadow-cljs-server": "shadow-cljs server"
   },
   "devDependencies": {
+    "node-sass": "^6.0.0",
     "rimraf": "^3.0.2",
     "serve": "^11.3.2",
     "shadow-cljs": "2.11.18"

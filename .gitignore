@@ -22,4 +22,5 @@ report.html
 
 # dist
 /public/js
+/public/css
 /out
