@@ -1,0 +1,20 @@
+// COLORS
+$primary: #3273dc;
+$dark: #2f3542;
+
+// TEXT
+$body-size: 16px;
+$weight-normal: 400;
+$weight-medium: 500;
+$weight-semibold: 600;
+$weight-light: $weight-normal;
+$weight-bold: $weight-semibold;
+
+// BREAKPOINTS
+$gap: 32px;
+$tablet: 769px;
+$desktop: 960px + (2 * $gap);
+$widescreen: 1152px + (2 * $gap);
+$fullhd: 1344px + (2 * $gap);
+$widescreen-enabled: true;
+$fullhd-enabled: false;

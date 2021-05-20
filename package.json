@@ -25,6 +25,7 @@
     "shadow-cljs-server": "shadow-cljs server"
   },
   "devDependencies": {
+    "bulma": "^0.9.2",
     "node-sass": "^6.0.0",
     "rimraf": "^3.0.2",
     "serve": "^11.3.2",
