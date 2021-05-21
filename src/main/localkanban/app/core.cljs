@@ -1,5 +1,27 @@
 (ns localkanban.app.core
-  (:require [reagent.dom :as rdom]))
+  (:require [reagent.core :as r]
+            [reagent.dom :as rdom]))
+
+;;; State
+
+(def initial-cards {1 {:id 1 :text "This is an example card to show you what the app looks like with data."}})
+
+(defonce cards (r/atom initial-cards))
+
+(defonce cards-counter (r/atom 1))
+
+(defn add-card [text]
+  (let [id (swap! cards-counter inc)
+        new-card {:id id :text text}]
+    (swap! cards assoc id new-card)))
+
+(def initial-view-state {:show-list-modal false :show-card-modal false})
+
+(defonce view-state (r/atom initial-view-state))
+
+(defn toggle-show-list-modal [] (swap! view-state update :show-list-modal not))
+
+(defn toggle-show-card-modal [] (swap! view-state update :show-card-modal not))
 
 ;;; Views
 
@@ -12,17 +34,15 @@
      [:div.buttons
       [:a.button.is-primary "Add another list"]]]]])
 
-(defn card-component []
+(defn card-component [card]
   [:div.card
    [:div.card-content
-    [:div.content "Lorem ipsum leo risus, porta ac consectetur ac, vestibulum at eros. Donec id elit non mi porta gravida at eget metus."]]])
+    [:div.content (card :text)]]])
 
 (defn cards-component []
   [:div.cards
-   [card-component]
-   [card-component]
-   [card-component]
-   [card-component]])
+   (for [card (vals @cards)]
+     ^{:key (card :id)} [card-component card])])
 
 (defn list-component []
   [:div.list
@@ -36,7 +56,7 @@
    [:div.column [list-component]]])
 
 (defn list-modal-component []
-  [:div.modal
+  [:div.modal {:class (if (@view-state :show-list-modal) "is-active" "")}
    [:div.modal-background]
    [:div.modal-card
     [:header.modal-card-head
@@ -49,7 +69,7 @@
      [:button.button.is-primary "Done"]]]])
 
 (defn card-modal-component []
-  [:div.modal
+  [:div.modal {:class (if (@view-state :show-card-modal) "is-active" "")}
    [:div.modal-background]
    [:div.modal-card
     [:header.modal-card-head
