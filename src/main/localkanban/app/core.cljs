@@ -12,6 +12,29 @@
      [:div.buttons
       [:a.button.is-primary "Add another list"]]]]])
 
+(defn card-component []
+  [:div.card
+   [:div.card-content
+    [:div.content "Lorem ipsum leo risus, porta ac consectetur ac, vestibulum at eros. Donec id elit non mi porta gravida at eget metus."]]])
+
+(defn cards-component []
+  [:div.cards
+   [card-component]
+   [card-component]
+   [card-component]
+   [card-component]])
+
+(defn list-component []
+  [:div.list
+   [:h1.list-title "List title"]
+   [cards-component]
+   [:div.list-footer
+    [:a "Add card"]]])
+
+(defn lists-component []
+  [:div.columns.is-mobile.is-vcentered
+   [:div.column [list-component]]])
+
 (defn list-modal-component []
   [:div.modal
    [:div.modal-background]
@@ -37,29 +60,6 @@
       [:textarea.textarea {:placeholder "Enter card description"}]]]
     [:footer.modal-card-foot
      [:button.button.is-primary "Done"]]]])
-
-(defn card-component []
-  [:div.card
-   [:div.card-content
-    [:div.content "Lorem ipsum leo risus, porta ac consectetur ac, vestibulum at eros. Donec id elit non mi porta gravida at eget metus."]]])
-
-(defn cards-component []
-  [:div.cards
-   [card-component]
-   [card-component]
-   [card-component]
-   [card-component]])
-
-(defn list-component []
-  [:div.list
-   [:h1.list-title "List title"]
-   [cards-component]
-   [:div.list-footer
-    [:a "Add card"]]])
-
-(defn lists-component []
-  [:div.columns.is-mobile.is-vcentered
-   [:div.column [list-component]]])
 
 (defn app []
   [:div.application
