@@ -65,6 +65,7 @@
 
   .card {
     cursor: pointer;
+    user-select: none;
     margin-bottom: 1rem;
 
     &:last-child {
