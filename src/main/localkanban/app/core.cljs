@@ -48,7 +48,7 @@
 
 (defn list-component []
   [:div.list
-   [:h1.list-title "Getting started"]
+   [:a.list-title "Getting started"]
    [cards-component]
    [:div.list-footer
     [:a "Add card"]]])
