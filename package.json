@@ -9,11 +9,11 @@
     "watch": "npm run watch-app & npm run watch-css",
     "build-app": "shadow-cljs release app",
     "build-app-verbose": "shadow-cljs release --verbose app",
-    "build-css": "node-sass public/scss --output public/css --output-style compressed",
+    "build-css": "node-sass web/scss --output web/css --output-style compressed",
     "build": "npm run build-app && npm run build-css",
     "report": "shadow-cljs run shadow.cljs.build-report app report.html",
     "debug-build": "shadow-cljs release app --debug",
-    "serve": "serve --single public --listen 5000",
+    "serve": "serve --single web --listen 5000",
     "dev-build": "shadow-cljs compile app",
     "repl": "shadow-cljs cljs-repl app",
     "browser-repl": "shadow-cljs browser-repl",
@@ -21,7 +21,7 @@
     "test": "shadow-cljs watch test",
     "test-browser": "shadow-cljs watch test-browser",
     "test-once": "shadow-cljs compile test",
-    "clean": "rimraf public/js public/css",
+    "clean": "rimraf web/js web/css",
     "shadow-cljs-server": "shadow-cljs server"
   },
   "devDependencies": {
