@@ -3,6 +3,8 @@ $primary: #3273dc;
 $dark: #2f3542;
 
 // TEXT
+$link: $primary;
+$link-hover: lighten($primary, 10);
 $body-size: 16px;
 $weight-normal: 400;
 $weight-medium: 500;
