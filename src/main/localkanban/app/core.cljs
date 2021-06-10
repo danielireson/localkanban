@@ -4,7 +4,9 @@
 
 ;;; State
 
-(def initial-cards {1 {:id 1 :text "This is an example card to show you what the app looks like with data."}})
+(def initial-cards {1 {:id 1 :text "This is an example card to show you what the app looks like with data."}
+                    2 {:id 2 :text "Create your own list using the add list button in the top-right hand corner."}
+                    3 {:id 3 :text "Delete this list by clicking on the list title and then the delete list button."}})
 
 (defonce cards (r/atom initial-cards))
 
@@ -46,7 +48,7 @@
 
 (defn list-component []
   [:div.list
-   [:h1.list-title "List title"]
+   [:h1.list-title "Getting started"]
    [cards-component]
    [:div.list-footer
     [:a "Add card"]]])
