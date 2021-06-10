@@ -52,8 +52,9 @@
     [:a "Add card"]]])
 
 (defn lists-component []
-  [:div.columns.is-mobile.is-vcentered
-   [:div.column [list-component]]])
+  [:div.wrapper
+   [:div.columns.is-mobile.is-vcentered
+    [:div.column [list-component]]]])
 
 (defn list-modal-component []
   [:div.modal {:class (if (@view-state :show-list-modal) "is-active" "")}

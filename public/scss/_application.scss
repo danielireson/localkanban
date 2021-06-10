@@ -27,8 +27,13 @@
     display: flex;
   }
 
-  .columns {
+  .wrapper {
     flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  .columns {
     margin: 0;
     overflow-x: scroll;
   }
