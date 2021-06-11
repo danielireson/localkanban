@@ -95,17 +95,19 @@
      [:button.button.is-danger "Delete"]]]])
 
 (defn add-card-modal-component []
-  [:div.modal {:class (if (@view-state :show-add-card-modal) "is-active" "")}
-   [:div.modal-background {:on-click toggle-add-card-modal}]
-   [:div.modal-card
-    [:header.modal-card-head
-     [:p.modal-card-title "Add card"]
-     [:button.delete {:on-click toggle-add-card-modal} {:aria-label "close"}]]
-    [:section.modal-card-body
-     [:p
-      [:textarea.textarea {:placeholder "Enter card description"}]]]
-    [:footer.modal-card-foot
-     [:button.button.is-primary "Save"]]]])
+  (let [value (r/atom "")]
+    (fn []
+      [:div.modal {:class (if (@view-state :show-add-card-modal) "is-active" "")}
+       [:div.modal-background {:on-click toggle-add-card-modal}]
+       [:div.modal-card
+        [:header.modal-card-head
+         [:p.modal-card-title "Add card"]
+         [:button.delete {:on-click toggle-add-card-modal} {:aria-label "close"}]]
+        [:section.modal-card-body
+         [:p
+          [:textarea.textarea {:value @value :placeholder "Enter card description" :on-change #(reset! value (.. % -target -value))}]]]
+        [:footer.modal-card-foot
+         [:button.button.is-primary {:on-click #(do (add-card @value) (reset! value "") (toggle-add-card-modal))} "Save"]]]])))
 
 (defn edit-card-modal-component []
   [:div.modal {:class (if (@view-state :show-edit-card-modal) "is-active" "")}
