@@ -5,7 +5,7 @@
 ;;; State
 
 (def initial-cards {1 {:id 1 :text "This is an example of a list to show you what the app looks like with data"}
-                    2 {:id 2 :text "Create your own list using the \"Add another list\" button in the navbar"}
+                    2 {:id 2 :text "Create your own list using the \"Add list\" button in the navbar"}
                     3 {:id 3 :text "Delete this list by clicking on the list title and choosing the \"Delete list\" option"}})
 
 (defonce cards (r/atom initial-cards))
@@ -17,13 +17,20 @@
         new-card {:id id :text text}]
     (swap! cards assoc id new-card)))
 
-(def initial-view-state {:show-list-modal false :show-card-modal false})
+(def initial-view-state {:show-add-list-modal false
+                         :show-edit-list-modal false
+                         :show-add-card-modal false
+                         :show-edit-card-modal false})
 
 (defonce view-state (r/atom initial-view-state))
 
-(defn toggle-show-list-modal [] (swap! view-state update :show-list-modal not))
+(defn toggle-add-list-modal [] (swap! view-state update :show-add-list-modal not))
 
-(defn toggle-show-card-modal [] (swap! view-state update :show-card-modal not))
+(defn toggle-edit-list-modal [] (swap! view-state update :show-edit-list-modal not))
+
+(defn toggle-add-card-modal [] (swap! view-state update :show-add-card-modal not))
+
+(defn toggle-edit-card-modal [] (swap! view-state update :show-edit-card-modal not))
 
 ;;; Views
 
@@ -34,10 +41,10 @@
    [:div.navbar-end
     [:div.navbar-item
      [:div.buttons
-      [:a.button.is-primary "Add another list"]]]]])
+      [:button.button.is-primary {:on-click toggle-add-list-modal} "Add list"]]]]])
 
 (defn card-component [card]
-  [:div.card
+  [:div.card {:on-click toggle-edit-card-modal}
    [:div.card-content
     [:div.content (card :text)]]])
 
@@ -48,48 +55,78 @@
 
 (defn list-component []
   [:div.list
-   [:a.list-title "Getting started"]
+   [:a.list-title {:on-click toggle-edit-list-modal} "Getting started"]
    [cards-component]
    [:div.list-footer
-    [:a "Add card"]]])
+    [:a {:on-click toggle-add-card-modal} "Add card"]]])
 
 (defn lists-component []
   [:div.wrapper
    [:div.columns.is-mobile.is-vcentered
     [:div.column [list-component]]]])
 
-(defn list-modal-component []
-  [:div.modal {:class (if (@view-state :show-list-modal) "is-active" "")}
-   [:div.modal-background]
+(defn add-list-modal-component []
+  [:div.modal {:class (if (@view-state :show-add-list-modal) "is-active" "")}
+   [:div.modal-background {:on-click toggle-add-list-modal}]
    [:div.modal-card
     [:header.modal-card-head
-     [:p.modal-card-title "Add another list"]
-     [:button.delete {:aria-label "close"}]]
+     [:p.modal-card-title "Add list"]
+     [:button.delete {:on-click toggle-add-list-modal} {:aria-label "close"}]]
     [:section.modal-card-body
      [:p
       [:input.input {:type "text" :placeholder "Enter list name"}]]]
     [:footer.modal-card-foot
-     [:button.button.is-primary "Done"]]]])
+     [:button.button.is-primary "Save"]]]])
 
-(defn card-modal-component []
-  [:div.modal {:class (if (@view-state :show-card-modal) "is-active" "")}
-   [:div.modal-background]
+(defn edit-list-modal-component []
+  [:div.modal {:class (if (@view-state :show-edit-list-modal) "is-active" "")}
+   [:div.modal-background {:on-click toggle-edit-list-modal}]
+   [:div.modal-card
+    [:header.modal-card-head
+     [:p.modal-card-title "Edit list"]
+     [:button.delete {:on-click toggle-edit-list-modal} {:aria-label "close"}]]
+    [:section.modal-card-body
+     [:p
+      [:input.input {:type "text" :placeholder "Enter list name"}]]]
+    [:footer.modal-card-foot
+     [:button.button.is-primary "Save"]
+     [:button.button.is-danger "Delete"]]]])
+
+(defn add-card-modal-component []
+  [:div.modal {:class (if (@view-state :show-add-card-modal) "is-active" "")}
+   [:div.modal-background {:on-click toggle-add-card-modal}]
    [:div.modal-card
     [:header.modal-card-head
      [:p.modal-card-title "Add card"]
-     [:button.delete {:aria-label "close"}]]
+     [:button.delete {:on-click toggle-add-card-modal} {:aria-label "close"}]]
     [:section.modal-card-body
      [:p
       [:textarea.textarea {:placeholder "Enter card description"}]]]
     [:footer.modal-card-foot
-     [:button.button.is-primary "Done"]]]])
+     [:button.button.is-primary "Save"]]]])
+
+(defn edit-card-modal-component []
+  [:div.modal {:class (if (@view-state :show-edit-card-modal) "is-active" "")}
+   [:div.modal-background {:on-click toggle-edit-card-modal}]
+   [:div.modal-card
+    [:header.modal-card-head
+     [:p.modal-card-title "Edit card"]
+     [:button.delete {:on-click toggle-edit-card-modal} {:aria-label "close"}]]
+    [:section.modal-card-body
+     [:p
+      [:textarea.textarea {:placeholder "Enter card description"}]]]
+    [:footer.modal-card-foot
+     [:button.button.is-primary "Save"]
+     [:button.button.is-danger "Delete"]]]])
 
 (defn app []
   [:div.application
    [navbar-component]
    [lists-component]
-   [list-modal-component]
-   [card-modal-component]])
+   [add-list-modal-component]
+   [edit-list-modal-component]
+   [add-card-modal-component]
+   [edit-card-modal-component]])
 
 ;;; Render
 
