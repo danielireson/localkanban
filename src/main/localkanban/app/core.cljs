@@ -37,7 +37,7 @@
 (defn navbar-component []
   [:nav.navbar {:role "navigation" :aria-label "navigation"}
    [:div.navbar-brand
-    [:a.navbar-item {:href "/"} [:span "Localkanban"]]]
+    [:span.navbar-item "Localkanban"]]
    [:div.navbar-end
     [:div.navbar-item
      [:div.buttons

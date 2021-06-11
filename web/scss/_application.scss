@@ -15,10 +15,11 @@
     display: flex;
   }
 
-  .navbar-item {
-    color: $dark !important;
+  .navbar-brand {
+    color: $dark;
     font-size: 1.2rem;
     font-weight: $weight-medium;
+    user-select: none;
   }
 
   .navbar-end {
