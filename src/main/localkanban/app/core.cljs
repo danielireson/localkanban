@@ -10,7 +10,7 @@
 
 (defonce cards (r/atom initial-cards))
 
-(defonce cards-counter (r/atom 1))
+(defonce cards-counter (r/atom (count initial-cards)))
 
 (defn add-card [text]
   (let [id (swap! cards-counter inc)
