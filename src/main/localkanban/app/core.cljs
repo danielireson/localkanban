@@ -13,14 +13,10 @@
 (defonce cards-counter (r/atom (count initial-cards)))
 
 (defn add-card [text]
-  (let [id (swap! cards-counter inc)
-        new-card {:id id :text text}]
+  (let [id (swap! cards-counter inc) new-card {:id id :text text}]
     (swap! cards assoc id new-card)))
 
-(def initial-view-state {:show-add-list-modal false
-                         :show-edit-list-modal false
-                         :show-add-card-modal false
-                         :show-edit-card-modal false})
+(def initial-view-state {:show-add-list-modal false :show-edit-list-modal false :show-add-card-modal false :show-edit-card-modal false})
 
 (defonce view-state (r/atom initial-view-state))
 
