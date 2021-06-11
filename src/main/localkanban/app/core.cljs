@@ -24,13 +24,15 @@
 
 (defonce view-state (r/atom initial-view-state))
 
-(defn toggle-add-list-modal [] (swap! view-state update :show-add-list-modal not))
+(defn toggle-view-state [key] (swap! view-state update key not))
 
-(defn toggle-edit-list-modal [] (swap! view-state update :show-edit-list-modal not))
+(defn toggle-add-list-modal [] (toggle-view-state :show-add-list-modal))
 
-(defn toggle-add-card-modal [] (swap! view-state update :show-add-card-modal not))
+(defn toggle-edit-list-modal [] (toggle-view-state :show-edit-list-modal))
 
-(defn toggle-edit-card-modal [] (swap! view-state update :show-edit-card-modal not))
+(defn toggle-add-card-modal [] (toggle-view-state :show-add-card-modal))
+
+(defn toggle-edit-card-modal [] (toggle-view-state :show-edit-card-modal))
 
 ;;; Views
 
