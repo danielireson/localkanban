@@ -93,7 +93,7 @@
   (let [value (r/atom "")
         reset-modal #(do (reset! value "") (toggle-add-list-modal))
         handle-change #(reset! value (.. % -target -value))
-        handle-save #(do (add-list @value) reset-modal)
+        handle-save #(do (add-list @value) (reset-modal))
         handle-key-down #(cond
                            (is-enter-key-event %) (handle-save)
                            (is-escape-key-event %) (reset-modal))]
