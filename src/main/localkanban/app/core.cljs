@@ -73,7 +73,9 @@
       ^{:key (list :id)} [:div.column [list-component list]])]])
 
 (defn add-list-modal-component []
-  (let [value (r/atom "")]
+  (let [value (r/atom "")
+        handle-change #(reset! value (.. % -target -value))
+        handle-save #(do (add-list @value) (reset! value "") (toggle-add-list-modal))]
     (fn []
       [:div.modal {:class (if (@view-state :show-add-list-modal) "is-active" "")}
        [:div.modal-background {:on-click toggle-add-list-modal}]
@@ -83,9 +85,9 @@
          [:button.delete {:on-click toggle-add-list-modal} {:aria-label "close"}]]
         [:section.modal-card-body
          [:p
-          [:input.input {:type "text" :placeholder "Enter list name" :on-change #(reset! value (.. % -target -value))}]]]
+          [:input.input {:type "text" :placeholder "Enter list name" :value @value :on-change handle-change}]]]
         [:footer.modal-card-foot
-         [:button.button.is-primary {:on-click #(do (add-list @value) (reset! value "") (toggle-add-list-modal))} "Save"]]]])))
+         [:button.button.is-primary {:on-click handle-save} "Save"]]]])))
 
 (defn edit-list-modal-component []
   [:div.modal {:class (if (@view-state :show-edit-list-modal) "is-active" "")}
@@ -102,7 +104,9 @@
      [:button.button.is-danger "Delete"]]]])
 
 (defn add-card-modal-component []
-  (let [value (r/atom "")]
+  (let [value (r/atom "")
+        handle-change #(reset! value (.. % -target -value))
+        handle-save #(do (add-card @value) (reset! value "") (toggle-add-card-modal))]
     (fn []
       [:div.modal {:class (if (@view-state :show-add-card-modal) "is-active" "")}
        [:div.modal-background {:on-click toggle-add-card-modal}]
@@ -112,9 +116,9 @@
          [:button.delete {:on-click toggle-add-card-modal} {:aria-label "close"}]]
         [:section.modal-card-body
          [:p
-          [:textarea.textarea {:value @value :placeholder "Enter card description" :on-change #(reset! value (.. % -target -value))}]]]
+          [:textarea.textarea {:value @value :placeholder "Enter card description" :on-change handle-change}]]]
         [:footer.modal-card-foot
-         [:button.button.is-primary {:on-click #(do (add-card @value) (reset! value "") (toggle-add-card-modal))} "Save"]]]])))
+         [:button.button.is-primary {:on-click handle-save} "Save"]]]])))
 
 (defn edit-card-modal-component []
   [:div.modal {:class (if (@view-state :show-edit-card-modal) "is-active" "")}
