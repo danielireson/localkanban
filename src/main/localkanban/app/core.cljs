@@ -6,9 +6,12 @@
 
 (def initial-lists {1 {:id 1
                        :title "Getting started"
-                       :cards {1 {:id 1 :text "This is an example list to show you what the application looks like with data"}
-                               2 {:id 2 :text "Create your own list using the \"Add list\" button in the top-right hand corner"}
-                               3 {:id 3 :text "Delete this list by clicking on the title and choosing the \"Delete\" option"}}}})
+                       :cards {1 {:id 1
+                                  :text "This is an example list to show you what the application looks like with data"}
+                               2 {:id 2
+                                  :text "Create your own list using the \"Add list\" button in the top-right hand corner"}
+                               3 {:id 3
+                                  :text "Delete this list by clicking on the title and choosing the \"Delete\" option"}}}})
 
 (defonce lists (r/atom initial-lists))
 
@@ -17,14 +20,21 @@
 (defonce cards-counter (r/atom (count (get-in initial-lists [1 :cards]))))
 
 (defn add-list [title]
-  (let [list-id (swap! lists-counter inc) new-list {:id list-id :title title}]
+  (let [list-id  (swap! lists-counter inc)
+        new-list {:id list-id
+                  :title title}]
     (swap! lists assoc list-id new-list)))
 
 (defn add-card [text]
-  (let [card-id (swap! cards-counter inc) new-card {:id card-id :text text}]
+  (let [card-id  (swap! cards-counter inc)
+        new-card {:id card-id
+                  :text text}]
     (swap! lists assoc card-id new-card)))
 
-(def initial-view-state {:show-add-list-modal false :show-edit-list-modal false :show-add-card-modal false :show-edit-card-modal false})
+(def initial-view-state {:show-add-list-modal false
+                         :show-edit-list-modal false
+                         :show-add-card-modal false
+                         :show-edit-card-modal false})
 
 (defonce view-state (r/atom initial-view-state))
 
@@ -47,7 +57,8 @@
 ;;; Views
 
 (defn navbar-component []
-  [:nav.navbar {:role "navigation" :aria-label "navigation"}
+  [:nav.navbar {:role "navigation"
+                :aria-label "navigation"}
    [:div.navbar-brand
     [:span.navbar-item "Localkanban"]]
    [:div.navbar-end
@@ -92,10 +103,15 @@
        [:div.modal-card
         [:header.modal-card-head
          [:p.modal-card-title "Add list"]
-         [:button.delete {:on-click toggle-add-list-modal} {:aria-label "close"}]]
+         [:button.delete {:on-click toggle-add-list-modal
+                          :aria-label "close"}]]
         [:section.modal-card-body
          [:p
-          [:input.input {:type "text" :value @value :placeholder "Enter list name" :on-change handle-change :on-key-down handle-key-down}]]]
+          [:input.input {:type "text"
+                         :value @value
+                         :placeholder "Enter list name"
+                         :on-change handle-change
+                         :on-key-down handle-key-down}]]]
         [:footer.modal-card-foot
          [:button.button.is-primary {:on-click handle-save} "Save"]]]])))
 
@@ -105,10 +121,12 @@
    [:div.modal-card
     [:header.modal-card-head
      [:p.modal-card-title "Edit list"]
-     [:button.delete {:on-click toggle-edit-list-modal} {:aria-label "close"}]]
+     [:button.delete {:on-click toggle-edit-list-modal
+                      :aria-label "close"}]]
     [:section.modal-card-body
      [:p
-      [:input.input {:type "text" :placeholder "Enter list name"}]]]
+      [:input.input {:type "text"
+                     :placeholder "Enter list name"}]]]
     [:footer.modal-card-foot
      [:button.button.is-primary "Save"]
      [:button.button.is-danger "Delete"]]]])
@@ -127,10 +145,14 @@
        [:div.modal-card
         [:header.modal-card-head
          [:p.modal-card-title "Add card"]
-         [:button.delete {:on-click toggle-add-card-modal} {:aria-label "close"}]]
+         [:button.delete {:on-click toggle-add-card-modal
+                          :aria-label "close"}]]
         [:section.modal-card-body
          [:p
-          [:textarea.textarea {:value @value :placeholder "Enter card description" :on-change handle-change :on-key-down handle-key-down}]]]
+          [:textarea.textarea {:value @value
+                               :placeholder "Enter card description"
+                               :on-change handle-change
+                               :on-key-down handle-key-down}]]]
         [:footer.modal-card-foot
          [:button.button.is-primary {:on-click handle-save} "Save"]]]])))
 
@@ -140,7 +162,8 @@
    [:div.modal-card
     [:header.modal-card-head
      [:p.modal-card-title "Edit card"]
-     [:button.delete {:on-click toggle-edit-card-modal} {:aria-label "close"}]]
+     [:button.delete {:on-click toggle-edit-card-modal
+                      :aria-label "close"}]]
     [:section.modal-card-body
      [:p
       [:textarea.textarea {:placeholder "Enter card description"}]]]
