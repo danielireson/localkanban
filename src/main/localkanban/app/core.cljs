@@ -99,11 +99,11 @@
                            (is-escape-key-event %) (reset-modal))]
     (fn []
       [:div.modal {:class (when (@view-state :show-add-list-modal) "is-active")}
-       [:div.modal-background {:on-click toggle-add-list-modal}]
+       [:div.modal-background {:on-click reset-modal}]
        [:div.modal-card
         [:header.modal-card-head
          [:p.modal-card-title "Add list"]
-         [:button.delete {:on-click toggle-add-list-modal
+         [:button.delete {:on-click reset-modal
                           :aria-label "close"}]]
         [:section.modal-card-body
          [:p
@@ -141,11 +141,11 @@
                            (is-escape-key-event %) (reset-modal))]
     (fn []
       [:div.modal {:class (when (@view-state :show-add-card-modal) "is-active")}
-       [:div.modal-background {:on-click toggle-add-card-modal}]
+       [:div.modal-background {:on-click reset-modal}]
        [:div.modal-card
         [:header.modal-card-head
          [:p.modal-card-title "Add card"]
-         [:button.delete {:on-click toggle-add-card-modal
+         [:button.delete {:on-click reset-modal
                           :aria-label "close"}]]
         [:section.modal-card-body
          [:p
