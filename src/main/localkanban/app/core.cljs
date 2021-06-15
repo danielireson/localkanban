@@ -91,7 +91,7 @@
 
 (defn add-list-modal-component []
   (let [value (r/atom "")
-        reset-modal #(do (reset! value "") (toggle-add-list-modal))
+        reset-modal #(do (toggle-add-list-modal) (reset! value ""))
         handle-change #(reset! value (-> % .-target .-value))
         handle-save #(do (add-list @value) (reset-modal))
         handle-key-down #(cond
@@ -133,7 +133,7 @@
 
 (defn add-card-modal-component []
   (let [value (r/atom "")
-        reset-modal #(do (reset! value "") (toggle-add-card-modal))
+        reset-modal #(do (toggle-add-card-modal) (reset! value ""))
         handle-change #(reset! value (-> % .-target .-value))
         handle-save #(do (add-card @value) (reset-modal))
         handle-key-down #(cond
