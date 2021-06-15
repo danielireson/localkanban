@@ -38,6 +38,12 @@
 
 (defn toggle-edit-card-modal [] (toggle-view-state :show-edit-card-modal))
 
+;;; Helpers
+
+(defn is-enter-key-event [e] (= (.-key e) "Enter"))
+
+(defn is-escape-key-event [e] (or (= (.-key e) "Escape") (= (.-key e) "Esc")))
+
 ;;; Views
 
 (defn navbar-component []
@@ -74,8 +80,12 @@
 
 (defn add-list-modal-component []
   (let [value (r/atom "")
+        reset-modal #(do (reset! value "") (toggle-add-list-modal))
         handle-change #(reset! value (.. % -target -value))
-        handle-save #(do (add-list @value) (reset! value "") (toggle-add-list-modal))]
+        handle-save #(do (add-list @value) reset-modal)
+        handle-key-down #(cond
+                           (is-enter-key-event %) (handle-save)
+                           (is-escape-key-event %) (reset-modal))]
     (fn []
       [:div.modal {:class (if (@view-state :show-add-list-modal) "is-active" "")}
        [:div.modal-background {:on-click toggle-add-list-modal}]
@@ -85,7 +95,7 @@
          [:button.delete {:on-click toggle-add-list-modal} {:aria-label "close"}]]
         [:section.modal-card-body
          [:p
-          [:input.input {:type "text" :placeholder "Enter list name" :value @value :on-change handle-change}]]]
+          [:input.input {:type "text" :value @value :placeholder "Enter list name" :on-change handle-change :on-key-down handle-key-down}]]]
         [:footer.modal-card-foot
          [:button.button.is-primary {:on-click handle-save} "Save"]]]])))
 
@@ -105,8 +115,12 @@
 
 (defn add-card-modal-component []
   (let [value (r/atom "")
+        reset-modal #(do (reset! value "") (toggle-add-card-modal))
         handle-change #(reset! value (.. % -target -value))
-        handle-save #(do (add-card @value) (reset! value "") (toggle-add-card-modal))]
+        handle-save #(do (add-card @value) (reset-modal))
+        handle-key-down #(cond
+                           (is-enter-key-event %) (handle-save)
+                           (is-escape-key-event %) (reset-modal))]
     (fn []
       [:div.modal {:class (if (@view-state :show-add-card-modal) "is-active" "")}
        [:div.modal-background {:on-click toggle-add-card-modal}]
@@ -116,7 +130,7 @@
          [:button.delete {:on-click toggle-add-card-modal} {:aria-label "close"}]]
         [:section.modal-card-body
          [:p
-          [:textarea.textarea {:value @value :placeholder "Enter card description" :on-change handle-change}]]]
+          [:textarea.textarea {:value @value :placeholder "Enter card description" :on-change handle-change :on-key-down handle-key-down}]]]
         [:footer.modal-card-foot
          [:button.button.is-primary {:on-click handle-save} "Save"]]]])))
 
