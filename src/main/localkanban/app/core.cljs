@@ -98,7 +98,7 @@
                            (is-enter-key-event %) (handle-save)
                            (is-escape-key-event %) (reset-modal))]
     (fn []
-      [:div.modal {:class (if (@view-state :show-add-list-modal) "is-active" "")}
+      [:div.modal {:class (when (@view-state :show-add-list-modal) "is-active")}
        [:div.modal-background {:on-click toggle-add-list-modal}]
        [:div.modal-card
         [:header.modal-card-head
@@ -116,7 +116,7 @@
          [:button.button.is-primary {:on-click handle-save} "Save"]]]])))
 
 (defn edit-list-modal-component []
-  [:div.modal {:class (if (@view-state :show-edit-list-modal) "is-active" "")}
+  [:div.modal {:class (when (@view-state :show-edit-list-modal) "is-active")}
    [:div.modal-background {:on-click toggle-edit-list-modal}]
    [:div.modal-card
     [:header.modal-card-head
@@ -140,7 +140,7 @@
                            (is-enter-key-event %) (handle-save)
                            (is-escape-key-event %) (reset-modal))]
     (fn []
-      [:div.modal {:class (if (@view-state :show-add-card-modal) "is-active" "")}
+      [:div.modal {:class (when (@view-state :show-add-card-modal) "is-active")}
        [:div.modal-background {:on-click toggle-add-card-modal}]
        [:div.modal-card
         [:header.modal-card-head
@@ -157,7 +157,7 @@
          [:button.button.is-primary {:on-click handle-save} "Save"]]]])))
 
 (defn edit-card-modal-component []
-  [:div.modal {:class (if (@view-state :show-edit-card-modal) "is-active" "")}
+  [:div.modal {:class (when (@view-state :show-edit-card-modal) "is-active")}
    [:div.modal-background {:on-click toggle-edit-card-modal}]
    [:div.modal-card
     [:header.modal-card-head
