@@ -4,17 +4,25 @@
 
 ;;; State
 
-(def initial-cards {1 {:id 1 :text "This is an example list to show you what the application looks like with data"}
-                    2 {:id 2 :text "Create your own list using the \"Add list\" button in the top-right hand corner"}
-                    3 {:id 3 :text "Delete this list by clicking on the title and choosing the \"Delete\" option"}})
+(def initial-lists {1 {:id 1
+                       :title "Getting started"
+                       :cards {1 {:id 1 :text "This is an example list to show you what the application looks like with data"}
+                               2 {:id 2 :text "Create your own list using the \"Add list\" button in the top-right hand corner"}
+                               3 {:id 3 :text "Delete this list by clicking on the title and choosing the \"Delete\" option"}}}})
 
-(defonce cards (r/atom initial-cards))
+(defonce lists (r/atom initial-lists))
 
-(defonce cards-counter (r/atom (count initial-cards)))
+(defonce lists-counter (r/atom (count initial-lists)))
+
+(defonce cards-counter (r/atom (count (get-in initial-lists [1 :cards]))))
+
+(defn add-list [title]
+  (let [list-id (swap! lists-counter inc) new-list {:id list-id :title title}]
+    (swap! lists assoc list-id new-list)))
 
 (defn add-card [text]
-  (let [id (swap! cards-counter inc) new-card {:id id :text text}]
-    (swap! cards assoc id new-card)))
+  (let [card-id (swap! cards-counter inc) new-card {:id card-id :text text}]
+    (swap! lists assoc card-id new-card)))
 
 (def initial-view-state {:show-add-list-modal false :show-edit-list-modal false :show-add-card-modal false :show-edit-card-modal false})
 
@@ -46,35 +54,38 @@
    [:div.card-content
     [:div.content (card :text)]]])
 
-(defn cards-component []
+(defn cards-component [cards]
   [:div.cards
-   (for [card (vals @cards)]
+   (for [card (vals cards)]
      ^{:key (card :id)} [card-component card])])
 
-(defn list-component []
+(defn list-component [list]
   [:div.list
-   [:a.list-title {:on-click toggle-edit-list-modal} "Getting started"]
-   [cards-component]
+   [:a.list-title {:on-click toggle-edit-list-modal} (list :title)]
+   [cards-component (list :cards)]
    [:div.list-footer
     [:a {:on-click toggle-add-card-modal} "Add card"]]])
 
 (defn lists-component []
   [:div.wrapper
    [:div.columns.is-mobile.is-vcentered
-    [:div.column [list-component]]]])
+    (for [list (vals @lists)]
+      ^{:key (list :id)} [:div.column [list-component list]])]])
 
 (defn add-list-modal-component []
-  [:div.modal {:class (if (@view-state :show-add-list-modal) "is-active" "")}
-   [:div.modal-background {:on-click toggle-add-list-modal}]
-   [:div.modal-card
-    [:header.modal-card-head
-     [:p.modal-card-title "Add list"]
-     [:button.delete {:on-click toggle-add-list-modal} {:aria-label "close"}]]
-    [:section.modal-card-body
-     [:p
-      [:input.input {:type "text" :placeholder "Enter list name"}]]]
-    [:footer.modal-card-foot
-     [:button.button.is-primary "Save"]]]])
+  (let [value (r/atom "")]
+    (fn []
+      [:div.modal {:class (if (@view-state :show-add-list-modal) "is-active" "")}
+       [:div.modal-background {:on-click toggle-add-list-modal}]
+       [:div.modal-card
+        [:header.modal-card-head
+         [:p.modal-card-title "Add list"]
+         [:button.delete {:on-click toggle-add-list-modal} {:aria-label "close"}]]
+        [:section.modal-card-body
+         [:p
+          [:input.input {:type "text" :placeholder "Enter list name" :on-change #(reset! value (.. % -target -value))}]]]
+        [:footer.modal-card-foot
+         [:button.button.is-primary {:on-click #(do (add-list @value) (reset! value "") (toggle-add-list-modal))} "Save"]]]])))
 
 (defn edit-list-modal-component []
   [:div.modal {:class (if (@view-state :show-edit-list-modal) "is-active" "")}
