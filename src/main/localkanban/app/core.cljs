@@ -1,5 +1,6 @@
 (ns localkanban.app.core
-  (:require [reagent.core :as r]
+  (:require [react :as react]
+            [reagent.core :as r]
             [reagent.dom :as rdom]))
 
 ;;; State
@@ -54,6 +55,8 @@
 
 (defn is-escape-key-event [e] (or (= (.-key e) "Escape") (= (.-key e) "Esc")))
 
+(defn autofocus-modal [] (.focus (.querySelector js/document ".modal.is-active input, .modal.is-active textarea")))
+
 ;;; Views
 
 (defn navbar-component []
@@ -98,6 +101,7 @@
                            (is-enter-key-event %) (handle-save)
                            (is-escape-key-event %) (reset-modal))]
     (fn []
+      (react/useEffect #(when (@view-state :show-add-list-modal) (autofocus-modal)))
       [:div.modal {:class (when (@view-state :show-add-list-modal) "is-active")}
        [:div.modal-background {:on-click reset-modal}]
        [:div.modal-card
@@ -140,6 +144,7 @@
                            (is-enter-key-event %) (handle-save)
                            (is-escape-key-event %) (reset-modal))]
     (fn []
+      (react/useEffect #(when (@view-state :show-add-card-modal) (autofocus-modal)))
       [:div.modal {:class (when (@view-state :show-add-card-modal) "is-active")}
        [:div.modal-background {:on-click reset-modal}]
        [:div.modal-card
@@ -175,10 +180,10 @@
   [:div.application
    [navbar-component]
    [lists-component]
-   [add-list-modal-component]
-   [edit-list-modal-component]
-   [add-card-modal-component]
-   [edit-card-modal-component]])
+   [:f> add-list-modal-component]
+   [:f> edit-list-modal-component]
+   [:f> add-card-modal-component]
+   [:f> edit-card-modal-component]])
 
 ;;; Render
 
