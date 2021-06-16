@@ -39,6 +39,18 @@
 
 (defonce view-state (r/atom initial-view-state))
 
+(defn show-add-list-modal []
+  (@view-state :show-add-list-modal))
+
+(defn show-edit-list-modal []
+  (@view-state :show-edit-list-modal))
+
+(defn show-add-card-modal []
+  (@view-state :show-add-card-modal))
+
+(defn show-edit-card-modal []
+  (@view-state :show-edot-card-modal))
+
 (defn toggle-view-state [key]
   (swap! view-state update key not))
 
@@ -112,8 +124,8 @@
                            (is-enter-key-event %) (handle-save)
                            (is-escape-key-event %) (reset-modal))]
     (fn []
-      (react/useEffect #(when (@view-state :show-add-list-modal) (autofocus-modal)))
-      [:div.modal {:class (when (@view-state :show-add-list-modal) "is-active")}
+      (react/useEffect #(when (show-add-list-modal) (autofocus-modal)))
+      [:div.modal {:class (when (show-add-list-modal) "is-active")}
        [:div.modal-background {:on-click reset-modal}]
        [:div.modal-card
         [:header.modal-card-head
@@ -131,7 +143,7 @@
          [:button.button.is-primary {:on-click handle-save} "Save"]]]])))
 
 (defn edit-list-modal-component []
-  [:div.modal {:class (when (@view-state :show-edit-list-modal) "is-active")}
+  [:div.modal {:class (when (show-edit-list-modal) "is-active")}
    [:div.modal-background {:on-click toggle-edit-list-modal}]
    [:div.modal-card
     [:header.modal-card-head
@@ -155,8 +167,8 @@
                            (is-enter-key-event %) (handle-save)
                            (is-escape-key-event %) (reset-modal))]
     (fn []
-      (react/useEffect #(when (@view-state :show-add-card-modal) (autofocus-modal)))
-      [:div.modal {:class (when (@view-state :show-add-card-modal) "is-active")}
+      (react/useEffect #(when (show-add-card-modal) (autofocus-modal)))
+      [:div.modal {:class (when (show-add-card-modal) "is-active")}
        [:div.modal-background {:on-click reset-modal}]
        [:div.modal-card
         [:header.modal-card-head
@@ -173,7 +185,7 @@
          [:button.button.is-primary {:on-click handle-save} "Save"]]]])))
 
 (defn edit-card-modal-component []
-  [:div.modal {:class (when (@view-state :show-edit-card-modal) "is-active")}
+  [:div.modal {:class (when (show-edit-card-modal) "is-active")}
    [:div.modal-background {:on-click toggle-edit-card-modal}]
    [:div.modal-card
     [:header.modal-card-head
