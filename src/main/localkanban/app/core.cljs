@@ -8,7 +8,7 @@
 (def initial-lists {1 {:id 1
                        :title "Getting started"
                        :cards {1 {:id 1
-                                  :text "This is an example list to show you what the application looks like with data"}
+                                  :text "This is an example list to show you what the kanban board looks like with cards"}
                                2 {:id 2
                                   :text "Create your own list using the \"Add list\" button in the top-right hand corner"}
                                3 {:id 3
