@@ -5,32 +5,20 @@
 
 ;;; State
 
-(def initial-lists {1 {:id 1
-                       :title "Getting started"
-                       :cards {1 {:id 1
-                                  :text "This is a sample list to show you what the kanban board looks like with cards"}
-                               2 {:id 2
-                                  :text "Create your own list using the \"Add list\" button in the top-right hand corner"}
-                               3 {:id 3
-                                  :text "Delete this list by clicking on \"Getting started\" and choosing \"Delete\""}}}})
+(def initial-kanban-board {1 {:id 1
+                              :title "Getting started"
+                              :cards {1 {:id 1
+                                         :text "This is a sample list to show you what the kanban board looks like with cards"}
+                                      2 {:id 2
+                                         :text "Create your own list using the \"Add list\" button in the top-right hand corner"}
+                                      3 {:id 3
+                                         :text "Delete this list by clicking on \"Getting started\" and choosing \"Delete\""}}}})
 
-(defonce lists (r/atom initial-lists))
+(defonce kanban-board (r/atom initial-kanban-board))
 
-(defonce lists-counter (r/atom (count initial-lists)))
+(defonce kanban-lists-counter (r/atom (count initial-kanban-board)))
 
-(defonce cards-counter (r/atom (count (get-in initial-lists [1 :cards]))))
-
-(defn add-list [title]
-  (let [list-id  (swap! lists-counter inc)
-        new-list {:id list-id
-                  :title title}]
-    (swap! lists assoc list-id new-list)))
-
-(defn add-card [text]
-  (let [card-id  (swap! cards-counter inc)
-        new-card {:id card-id
-                  :text text}]
-    (swap! lists assoc card-id new-card)))
+(defonce kanban-cards-counter (r/atom (count (get-in initial-kanban-board [1 :cards]))))
 
 (def initial-view-state {:show-add-list-modal false
                          :show-edit-list-modal false
@@ -80,6 +68,18 @@
 (defn autofocus-modal []
   (.focus (.querySelector js/document ".modal.is-active input, .modal.is-active textarea")))
 
+(defn add-kanban-list [title]
+  (let [list-id  (swap! kanban-lists-counter inc)
+        new-list {:id list-id
+                  :title title}]
+    (swap! kanban-board assoc list-id new-list)))
+
+(defn add-kanban-card [list-id text]
+  (let [card-id  (swap! kanban-cards-counter inc)
+        new-card {:id card-id
+                  :text text}]
+    (swap! kanban-board assoc-in [list-id :cards card-id] new-card)))
+
 ;;; Views
 
 (defn navbar-component []
@@ -92,27 +92,27 @@
      [:div.buttons
       [:button.button.is-primary {:on-click toggle-add-list-modal} "Add list"]]]]])
 
-(defn card-component [card]
+(defn card-component [kanban-card]
   [:div.card {:on-click toggle-edit-card-modal}
    [:div.card-content
-    [:div.content (card :text)]]])
+    [:div.content (kanban-card :text)]]])
 
-(defn cards-component [cards]
+(defn cards-component [kanban-cards]
   [:div.cards
-   (for [card (vals cards)]
+   (for [card (vals kanban-cards)]
      ^{:key (card :id)} [card-component card])])
 
-(defn list-component [list]
+(defn list-component [kanban-list]
   [:div.list
-   [:a.list-title {:on-click toggle-edit-list-modal} (list :title)]
-   [cards-component (list :cards)]
+   [:a.list-title {:on-click toggle-edit-list-modal} (kanban-list :title)]
+   [cards-component (kanban-list :cards)]
    [:div.list-footer
     [:a {:on-click toggle-add-card-modal} "Add card"]]])
 
 (defn lists-component []
   [:div.wrapper
    [:div.columns.is-mobile.is-vcentered
-    (for [list (vals @lists)]
+    (for [list (vals @kanban-board)]
       ^{:key (list :id)} [:div.column [list-component list]])]])
 
 (defn add-list-modal-component []
