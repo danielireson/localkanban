@@ -39,23 +39,34 @@
 
 (defonce view-state (r/atom initial-view-state))
 
-(defn toggle-view-state [key] (swap! view-state update key not))
+(defn toggle-view-state [key]
+  (swap! view-state update key not))
 
-(defn toggle-add-list-modal [] (toggle-view-state :show-add-list-modal))
 
-(defn toggle-edit-list-modal [] (toggle-view-state :show-edit-list-modal))
 
-(defn toggle-add-card-modal [] (toggle-view-state :show-add-card-modal))
 
-(defn toggle-edit-card-modal [] (toggle-view-state :show-edit-card-modal))
+(defn toggle-add-list-modal []
+  (toggle-view-state :show-add-list-modal))
+
+(defn toggle-edit-list-modal [list-id]
+  (toggle-view-state :show-edit-list-modal))
+
+(defn toggle-add-card-modal []
+  (toggle-view-state :show-add-card-modal))
+
+(defn toggle-edit-card-modal [list-id card-id]
+  (toggle-view-state :show-edit-card-modal))
 
 ;;; Helpers
 
-(defn is-enter-key-event [e] (= (.-key e) "Enter"))
+(defn is-enter-key-event [e]
+  (= (.-key e) "Enter"))
 
-(defn is-escape-key-event [e] (or (= (.-key e) "Escape") (= (.-key e) "Esc")))
+(defn is-escape-key-event [e]
+  (or (= (.-key e) "Escape") (= (.-key e) "Esc")))
 
-(defn autofocus-modal [] (.focus (.querySelector js/document ".modal.is-active input, .modal.is-active textarea")))
+(defn autofocus-modal []
+  (.focus (.querySelector js/document ".modal.is-active input, .modal.is-active textarea")))
 
 ;;; Views
 
