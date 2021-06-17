@@ -20,12 +20,22 @@
 
 (defonce kanban-cards-counter (r/atom (count (get-in initial-kanban-board [1 :cards]))))
 
-(def initial-view-state {:show-add-list-modal false
+(def initial-view-state {:active-list-id nil
+                         :active-card-id nil
+                         :show-add-list-modal false
                          :show-edit-list-modal false
                          :show-add-card-modal false
                          :show-edit-card-modal false})
 
 (defonce view-state (r/atom initial-view-state))
+
+;;; Helpers
+
+(defn active-list-id []
+  (@view-state :active-list-id))
+
+(defn active-card-id []
+  (@view-state :active-card-id))
 
 (defn show-add-list-modal []
   (@view-state :show-add-list-modal))
@@ -42,8 +52,14 @@
 (defn toggle-view-state [key]
   (swap! view-state update key not))
 
+(defn set-active-list [list-id]
+  (swap! view-state assoc :active-list-id list-id))
 
+(defn set-active-card [list-id card-id]
+  (swap! view-state assoc :active-list-id list-id :active-card-id card-id))
 
+(defn reset-active-ids []
+  (swap! view-state assoc :active-list-id nil :active-card-id nil))
 
 (defn toggle-add-list-modal []
   (toggle-view-state :show-add-list-modal))
@@ -56,8 +72,6 @@
 
 (defn toggle-edit-card-modal [list-id card-id]
   (toggle-view-state :show-edit-card-modal))
-
-;;; Helpers
 
 (defn is-enter-key-event [e]
   (= (.-key e) "Enter"))
