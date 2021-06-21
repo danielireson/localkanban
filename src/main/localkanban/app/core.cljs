@@ -47,7 +47,7 @@
   (@view-state :show-add-card-modal))
 
 (defn show-edit-card-modal []
-  (@view-state :show-edot-card-modal))
+  (@view-state :show-edit-card-modal))
 
 (defn toggle-view-state [key]
   (swap! view-state update key not))
@@ -68,10 +68,12 @@
   (if (show-edit-list-modal) (reset-active-ids) (set-active-list list-id))
   (toggle-view-state :show-edit-list-modal))
 
-(defn toggle-add-card-modal []
+(defn toggle-add-card-modal [list-id]
+  (if (show-add-card-modal) (reset-active-ids) (set-active-list list-id))
   (toggle-view-state :show-add-card-modal))
 
 (defn toggle-edit-card-modal [list-id card-id]
+  (if (show-edit-card-modal) (reset-active-ids) (set-active-card list-id card-id))
   (toggle-view-state :show-edit-card-modal))
 
 (defn is-enter-key-event [e]
@@ -89,17 +91,23 @@
                   :title title}]
     (swap! kanban-board assoc list-id new-list)))
 
-(defn add-kanban-card [list-id text]
 (defn update-kanban-list [list-id title]
   (swap! kanban-board assoc-in [list-id :title] title))
 
 (defn delete-kanban-list [list-id]
   (swap! kanban-board dissoc list-id))
 
+(defn add-kanban-card [list-id text]
   (let [card-id  (swap! kanban-cards-counter inc)
         new-card {:id card-id
                   :text text}]
     (swap! kanban-board assoc-in [list-id :cards card-id] new-card)))
+
+(defn update-kanban-card [list-id card-id text]
+  (swap! kanban-board assoc-in [list-id :cards card-id :text] text))
+
+(defn delete-kanban-card [list-id card-id]
+  (swap! kanban-board update-in [list-id :cards] dissoc card-id))
 
 ;;; Views
 
@@ -113,29 +121,31 @@
      [:div.buttons
       [:button.button.is-primary {:on-click toggle-add-list-modal} "Add list"]]]]])
 
-(defn card-component [kanban-card]
-  [:div.card {:on-click toggle-edit-card-modal}
-   [:div.card-content
-    [:div.content (kanban-card :text)]]])
+(defn card-component [list-id kanban-card]
+  (let [handle-card #(toggle-edit-card-modal list-id (kanban-card :id))]
+    [:div.card {:on-click handle-card}
+     [:div.card-content
+      [:div.content (kanban-card :text)]]]))
 
-(defn cards-component [kanban-cards]
+(defn cards-component [kanban-list]
   [:div.cards
-   (for [card (vals kanban-cards)]
-     ^{:key (card :id)} [card-component card])])
+   (for [card (vals (kanban-list :cards))]
+     ^{:key (card :id)} [card-component (kanban-list :id) card])])
 
 (defn list-component [kanban-list]
-  (let [handle-title #(toggle-edit-list-modal (kanban-list :id))]
+  (let [handle-list-title #(toggle-edit-list-modal (kanban-list :id))
+        handle-add-card #(toggle-add-card-modal (kanban-list :id))]
     [:div.list
-     [:a.list-title {:on-click handle-title} (kanban-list :title)]
-     [cards-component (kanban-list :cards)]
+     [:a.list-title {:on-click handle-list-title} (kanban-list :title)]
+     [cards-component kanban-list]
      [:div.list-footer
-      [:a {:on-click toggle-add-card-modal} "Add card"]]]))
+      [:a {:on-click handle-add-card} "Add card"]]]))
 
 (defn lists-component []
   [:div.wrapper
    [:div.columns.is-mobile.is-vcentered
-    (for [list (vals @kanban-board)]
-      ^{:key (list :id)} [:div.column [list-component list]])]])
+    (for [kanban-list (vals @kanban-board)]
+      ^{:key (kanban-list :id)} [:div.column [list-component kanban-list]])]])
 
 (defn add-list-modal-component []
   (let [value (r/atom "")
@@ -195,9 +205,9 @@
 
 (defn add-card-modal-component []
   (let [value (r/atom "")
-        reset-modal #(do (toggle-add-card-modal) (reset! value ""))
+        reset-modal #(do (toggle-add-card-modal (active-list-id)) (reset! value ""))
         handle-change #(reset! value (-> % .-target .-value))
-        handle-save #(do (add-card @value) (reset-modal))
+        handle-save #(do (add-kanban-card (active-list-id) @value) (reset-modal))
         handle-key-down #(cond
                            (is-enter-key-event %) (handle-save)
                            (is-escape-key-event %) (reset-modal))]
@@ -220,19 +230,31 @@
          [:button.button.is-primary {:on-click handle-save} "Save"]]]])))
 
 (defn edit-card-modal-component []
-  [:div.modal {:class (when (show-edit-card-modal) "is-active")}
-   [:div.modal-background {:on-click toggle-edit-card-modal}]
-   [:div.modal-card
-    [:header.modal-card-head
-     [:p.modal-card-title "Edit card"]
-     [:button.delete {:on-click toggle-edit-card-modal
-                      :aria-label "close"}]]
-    [:section.modal-card-body
-     [:p
-      [:textarea.textarea {:placeholder "Enter card description"}]]]
-    [:footer.modal-card-foot
-     [:button.button.is-primary "Save"]
-     [:button.button.is-danger "Delete"]]]])
+  (let [value (r/atom "")
+        reset-modal #(do (toggle-edit-card-modal (active-list-id) (active-card-id)) (reset! value ""))
+        handle-change #(reset! value (-> % .-target .-value))
+        handle-save #(do (update-kanban-card (active-list-id) (active-card-id) @value) (reset-modal))
+        handle-delete #(do (delete-kanban-card (active-list-id) (active-card-id)) (reset-modal))
+        handle-key-down #(cond
+                           (is-enter-key-event %) (handle-save)
+                           (is-escape-key-event %) (reset-modal))]
+    (fn []
+      [:div.modal {:class (when (show-edit-card-modal) "is-active")}
+       [:div.modal-background {:on-click toggle-edit-card-modal}]
+       [:div.modal-card
+        [:header.modal-card-head
+         [:p.modal-card-title "Edit card"]
+         [:button.delete {:on-click reset-modal
+                          :aria-label "close"}]]
+        [:section.modal-card-body
+         [:p
+          [:textarea.textarea {:value @value
+                               :placeholder "Enter card description"
+                               :on-change handle-change
+                               :on-key-down handle-key-down}]]]
+        [:footer.modal-card-foot
+         [:button.button.is-primary {:on-click handle-save} "Save"]
+         [:button.button.is-danger {:on-click handle-delete} "Delete"]]]])))
 
 (defn app []
   [:div.application
