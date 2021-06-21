@@ -65,6 +65,7 @@
   (toggle-view-state :show-add-list-modal))
 
 (defn toggle-edit-list-modal [list-id]
+  (if (show-edit-list-modal) (reset-active-ids) (set-active-list list-id))
   (toggle-view-state :show-edit-list-modal))
 
 (defn toggle-add-card-modal []
@@ -89,6 +90,12 @@
     (swap! kanban-board assoc list-id new-list)))
 
 (defn add-kanban-card [list-id text]
+(defn update-kanban-list [list-id title]
+  (swap! kanban-board assoc-in [list-id :title] title))
+
+(defn delete-kanban-list [list-id]
+  (swap! kanban-board dissoc list-id))
+
   (let [card-id  (swap! kanban-cards-counter inc)
         new-card {:id card-id
                   :text text}]
@@ -117,11 +124,12 @@
      ^{:key (card :id)} [card-component card])])
 
 (defn list-component [kanban-list]
-  [:div.list
-   [:a.list-title {:on-click toggle-edit-list-modal} (kanban-list :title)]
-   [cards-component (kanban-list :cards)]
-   [:div.list-footer
-    [:a {:on-click toggle-add-card-modal} "Add card"]]])
+  (let [handle-title #(toggle-edit-list-modal (kanban-list :id))]
+    [:div.list
+     [:a.list-title {:on-click handle-title} (kanban-list :title)]
+     [cards-component (kanban-list :cards)]
+     [:div.list-footer
+      [:a {:on-click toggle-add-card-modal} "Add card"]]]))
 
 (defn lists-component []
   [:div.wrapper
@@ -157,20 +165,33 @@
          [:button.button.is-primary {:on-click handle-save} "Save"]]]])))
 
 (defn edit-list-modal-component []
-  [:div.modal {:class (when (show-edit-list-modal) "is-active")}
-   [:div.modal-background {:on-click toggle-edit-list-modal}]
-   [:div.modal-card
-    [:header.modal-card-head
-     [:p.modal-card-title "Edit list"]
-     [:button.delete {:on-click toggle-edit-list-modal
-                      :aria-label "close"}]]
-    [:section.modal-card-body
-     [:p
-      [:input.input {:type "text"
-                     :placeholder "Enter list name"}]]]
-    [:footer.modal-card-foot
-     [:button.button.is-primary "Save"]
-     [:button.button.is-danger "Delete"]]]])
+  (let [value (r/atom "")
+        reset-modal #(do (toggle-edit-list-modal (active-list-id)) (reset! value ""))
+        handle-change #(reset! value (-> % .-target .-value))
+        handle-save #(do (update-kanban-list (active-list-id) @value) (reset-modal))
+        handle-delete #(do (delete-kanban-list (active-list-id)) (reset-modal))
+        handle-key-down #(cond
+                           (is-enter-key-event %) (handle-save)
+                           (is-escape-key-event %) (reset-modal))]
+    (fn []
+      (react/useEffect #(when (show-edit-list-modal) (autofocus-modal)))
+      [:div.modal {:class (when (show-edit-list-modal) "is-active")}
+       [:div.modal-background {:on-click reset-modal}]
+       [:div.modal-card
+        [:header.modal-card-head
+         [:p.modal-card-title "Edit list"]
+         [:button.delete {:on-click reset-modal
+                          :aria-label "close"}]]
+        [:section.modal-card-body
+         [:p
+          [:input.input {:type "text"
+                         :value @value
+                         :placeholder "Enter list name"
+                         :on-change handle-change
+                         :on-key-down handle-key-down}]]]
+        [:footer.modal-card-foot
+         [:button.button.is-primary {:on-click handle-save} "Save"]
+         [:button.button.is-danger {:on-click handle-delete} "Delete"]]]])))
 
 (defn add-card-modal-component []
   (let [value (r/atom "")
