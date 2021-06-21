@@ -10,7 +10,7 @@
                               :cards {1 {:id 1
                                          :text "This is a sample list to show you what the kanban board looks like with cards"}
                                       2 {:id 2
-                                         :text "Create your own list using the \"Add list\" button in the top-right hand corner"}
+                                         :text "Create a new list using the \"Add list\" button in the top-right hand corner"}
                                       3 {:id 3
                                          :text "Delete this list by clicking on \"Getting started\" and using the \"Delete\" button"}}}})
 
