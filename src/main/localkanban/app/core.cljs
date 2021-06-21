@@ -5,7 +5,7 @@
 
 ;;; State
 
-(def initial-kanban-board {1 {:id 1
+(def default-kanban-board {1 {:id 1
                               :title "Getting started"
                               :cards {1 {:id 1
                                          :description "This is a sample list to show you what the kanban board looks like with cards"}
@@ -14,35 +14,49 @@
                                       3 {:id 3
                                          :description "Delete this list by clicking on \"Getting started\" and using the \"Delete\" button"}}}})
 
-(defonce kanban-board (r/atom initial-kanban-board))
+(defonce kanban-board
+  (let [saved-json (try (.getItem js/localStorage "localkanban:state") (catch js/Error _))
+        saved-kanban-board (try (js->clj (.parse js/JSON saved-json) :keywordize-keys true) (catch js/Error _))]
+  (r/atom (if (pos? (count saved-kanban-board)) saved-kanban-board default-kanban-board))))
 
-(defonce kanban-lists-counter (r/atom (count initial-kanban-board)))
+(defonce kanban-lists-counter
+  (r/atom (count @kanban-board)))
 
-(defonce kanban-cards-counter (r/atom (count (get-in initial-kanban-board [1 :cards]))))
+(defonce kanban-cards-counter
+  (r/atom (reduce (fn [kanban-list] count kanban-list :cards) @kanban-board)))
+
+(defn save-kanban-board []
+  (.setItem js/localStorage "localkanban:state" (.stringify js/JSON (clj->js @kanban-board))))
 
 (defn add-kanban-list [title]
   (let [list-id  (swap! kanban-lists-counter inc)
         new-list {:id list-id
                   :title title}]
-    (swap! kanban-board assoc list-id new-list)))
+    (swap! kanban-board assoc list-id new-list)
+    (save-kanban-board)))
 
 (defn update-kanban-list [list-id title]
-  (swap! kanban-board assoc-in [list-id :title] title))
+  (swap! kanban-board assoc-in [list-id :title] title)
+  (save-kanban-board))
 
 (defn delete-kanban-list [list-id]
-  (swap! kanban-board dissoc list-id))
+  (swap! kanban-board dissoc list-id)
+  (save-kanban-board))
 
 (defn add-kanban-card [list-id description]
   (let [card-id  (swap! kanban-cards-counter inc)
         new-card {:id card-id
                   :description description}]
-    (swap! kanban-board assoc-in [list-id :cards card-id] new-card)))
+    (swap! kanban-board assoc-in [list-id :cards card-id] new-card)
+    (save-kanban-board)))
 
 (defn update-kanban-card [list-id card-id description]
-  (swap! kanban-board assoc-in [list-id :cards card-id :description] description))
+  (swap! kanban-board assoc-in [list-id :cards card-id :description] description)
+  (save-kanban-board))
 
 (defn delete-kanban-card [list-id card-id]
-  (swap! kanban-board update-in [list-id :cards] dissoc card-id))
+  (swap! kanban-board update-in [list-id :cards] dissoc card-id)
+  (save-kanban-board))
 
 (def initial-view-state {:active-list-id nil
                          :active-card-id nil
