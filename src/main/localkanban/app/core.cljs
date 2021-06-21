@@ -8,11 +8,11 @@
 (def initial-kanban-board {1 {:id 1
                               :title "Getting started"
                               :cards {1 {:id 1
-                                         :text "This is a sample list to show you what the kanban board looks like with cards"}
+                                         :description "This is a sample list to show you what the kanban board looks like with cards"}
                                       2 {:id 2
-                                         :text "Create a new list using the \"Add list\" button in the top-right hand corner"}
+                                         :description "Create a new list using the \"Add list\" button in the top-right hand corner"}
                                       3 {:id 3
-                                         :text "Delete this list by clicking on \"Getting started\" and using the \"Delete\" button"}}}})
+                                         :description "Delete this list by clicking on \"Getting started\" and using the \"Delete\" button"}}}})
 
 (defonce kanban-board (r/atom initial-kanban-board))
 
@@ -97,14 +97,14 @@
 (defn delete-kanban-list [list-id]
   (swap! kanban-board dissoc list-id))
 
-(defn add-kanban-card [list-id text]
+(defn add-kanban-card [list-id description]
   (let [card-id  (swap! kanban-cards-counter inc)
         new-card {:id card-id
-                  :text text}]
+                  :description description}]
     (swap! kanban-board assoc-in [list-id :cards card-id] new-card)))
 
-(defn update-kanban-card [list-id card-id text]
-  (swap! kanban-board assoc-in [list-id :cards card-id :text] text))
+(defn update-kanban-card [list-id card-id description]
+  (swap! kanban-board assoc-in [list-id :cards card-id :description] description))
 
 (defn delete-kanban-card [list-id card-id]
   (swap! kanban-board update-in [list-id :cards] dissoc card-id))
@@ -125,7 +125,7 @@
   (let [handle-card #(toggle-edit-card-modal list-id (kanban-card :id))]
     [:div.card {:on-click handle-card}
      [:div.card-content
-      [:div.content (kanban-card :text)]]]))
+      [:div.content (kanban-card :description)]]]))
 
 (defn cards-component [kanban-list]
   [:div.cards
