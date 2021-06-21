@@ -239,6 +239,7 @@
                            (is-enter-key-event %) (handle-save)
                            (is-escape-key-event %) (reset-modal))]
     (fn []
+      (react/useEffect #(when (show-edit-card-modal) (autofocus-modal)))
       [:div.modal {:class (when (show-edit-card-modal) "is-active")}
        [:div.modal-background {:on-click toggle-edit-card-modal}]
        [:div.modal-card
