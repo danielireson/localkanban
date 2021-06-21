@@ -20,6 +20,30 @@
 
 (defonce kanban-cards-counter (r/atom (count (get-in initial-kanban-board [1 :cards]))))
 
+(defn add-kanban-list [title]
+  (let [list-id  (swap! kanban-lists-counter inc)
+        new-list {:id list-id
+                  :title title}]
+    (swap! kanban-board assoc list-id new-list)))
+
+(defn update-kanban-list [list-id title]
+  (swap! kanban-board assoc-in [list-id :title] title))
+
+(defn delete-kanban-list [list-id]
+  (swap! kanban-board dissoc list-id))
+
+(defn add-kanban-card [list-id description]
+  (let [card-id  (swap! kanban-cards-counter inc)
+        new-card {:id card-id
+                  :description description}]
+    (swap! kanban-board assoc-in [list-id :cards card-id] new-card)))
+
+(defn update-kanban-card [list-id card-id description]
+  (swap! kanban-board assoc-in [list-id :cards card-id :description] description))
+
+(defn delete-kanban-card [list-id card-id]
+  (swap! kanban-board update-in [list-id :cards] dissoc card-id))
+
 (def initial-view-state {:active-list-id nil
                          :active-card-id nil
                          :show-add-list-modal false
@@ -84,30 +108,6 @@
 
 (defn autofocus-modal []
   (.focus (.querySelector js/document ".modal.is-active input, .modal.is-active textarea")))
-
-(defn add-kanban-list [title]
-  (let [list-id  (swap! kanban-lists-counter inc)
-        new-list {:id list-id
-                  :title title}]
-    (swap! kanban-board assoc list-id new-list)))
-
-(defn update-kanban-list [list-id title]
-  (swap! kanban-board assoc-in [list-id :title] title))
-
-(defn delete-kanban-list [list-id]
-  (swap! kanban-board dissoc list-id))
-
-(defn add-kanban-card [list-id description]
-  (let [card-id  (swap! kanban-cards-counter inc)
-        new-card {:id card-id
-                  :description description}]
-    (swap! kanban-board assoc-in [list-id :cards card-id] new-card)))
-
-(defn update-kanban-card [list-id card-id description]
-  (swap! kanban-board assoc-in [list-id :cards card-id :description] description))
-
-(defn delete-kanban-card [list-id card-id]
-  (swap! kanban-board update-in [list-id :cards] dissoc card-id))
 
 ;;; Views
 
