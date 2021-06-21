@@ -1,6 +1,5 @@
 {:source-paths
- ["src/main"
-  "src/test"]
+ ["src/main"]
 
  :dependencies
  [[reagent            "1.0.0"]
@@ -15,15 +14,4 @@
    :output-dir "web/js"
    :asset-path "/js"
    :modules    {:main
-                {:init-fn localkanban.app.core/main}}}
-
-  :test
-  {:target     :node-test
-   :output-to  "out/node/tests.js"
-   :autorun    true}
-
-  :test-browser
-  {:target     :browser-test
-   :test-dir   "out/browser/test"
-   :devtools   {:http-port 3021
-                :http-root "out/browser/test"}}}}
+                {:init-fn localkanban.app.core/main}}}}}

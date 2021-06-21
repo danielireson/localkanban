@@ -18,9 +18,6 @@
     "repl": "shadow-cljs cljs-repl app",
     "browser-repl": "shadow-cljs browser-repl",
     "clojure-repl": "shadow-cljs clj-repl",
-    "test": "shadow-cljs watch test",
-    "test-browser": "shadow-cljs watch test-browser",
-    "test-once": "shadow-cljs compile test",
     "clean": "rimraf web/js web/css",
     "shadow-cljs-server": "shadow-cljs server"
   },
