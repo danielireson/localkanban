@@ -12,7 +12,7 @@
                                       2 {:id 2
                                          :text "Create your own list using the \"Add list\" button in the top-right hand corner"}
                                       3 {:id 3
-                                         :text "Delete this list by clicking on \"Getting started\" and choosing \"Delete\""}}}})
+                                         :text "Delete this list by clicking on \"Getting started\" and using the \"Delete\" button"}}}})
 
 (defonce kanban-board (r/atom initial-kanban-board))
 
