@@ -114,10 +114,10 @@
   (if (show-edit-card-modal) (reset-active-ids) (set-active-card list-id card-id))
   (toggle-view-state :show-edit-card-modal))
 
-(defn is-enter-key-event [e]
+(defn enter-key-event? [e]
   (= (.-key e) "Enter"))
 
-(defn is-escape-key-event [e]
+(defn escape-key-event? [e]
   (or (= (.-key e) "Escape") (= (.-key e) "Esc")))
 
 (defn autofocus-modal []
@@ -167,8 +167,8 @@
         handle-change #(reset! value (-> % .-target .-value))
         handle-save #(do (add-kanban-list @value) (reset-modal))
         handle-key-down #(cond
-                           (is-enter-key-event %) (handle-save)
-                           (is-escape-key-event %) (reset-modal))]
+                           (enter-key-event? %) (handle-save)
+                           (escape-key-event? %) (reset-modal))]
     (fn []
       (react/useEffect #(when (show-add-list-modal) (autofocus-modal)))
       [:div.modal {:class (when (show-add-list-modal) "is-active")}
@@ -195,8 +195,8 @@
         handle-save #(do (update-kanban-list (active-list-id) @value) (reset-modal))
         handle-delete #(do (delete-kanban-list (active-list-id)) (reset-modal))
         handle-key-down #(cond
-                           (is-enter-key-event %) (handle-save)
-                           (is-escape-key-event %) (reset-modal))]
+                           (enter-key-event? %) (handle-save)
+                           (escape-key-event? %) (reset-modal))]
     (fn []
       (react/useEffect #(when (show-edit-list-modal) (autofocus-modal)))
       [:div.modal {:class (when (show-edit-list-modal) "is-active")}
@@ -223,8 +223,8 @@
         handle-change #(reset! value (-> % .-target .-value))
         handle-save #(do (add-kanban-card (active-list-id) @value) (reset-modal))
         handle-key-down #(cond
-                           (is-enter-key-event %) (handle-save)
-                           (is-escape-key-event %) (reset-modal))]
+                           (enter-key-event? %) (handle-save)
+                           (escape-key-event? %) (reset-modal))]
     (fn []
       (react/useEffect #(when (show-add-card-modal) (autofocus-modal)))
       [:div.modal {:class (when (show-add-card-modal) "is-active")}
@@ -250,8 +250,8 @@
         handle-save #(do (update-kanban-card (active-list-id) (active-card-id) @value) (reset-modal))
         handle-delete #(do (delete-kanban-card (active-list-id) (active-card-id)) (reset-modal))
         handle-key-down #(cond
-                           (is-enter-key-event %) (handle-save)
-                           (is-escape-key-event %) (reset-modal))]
+                           (enter-key-event? %) (handle-save)
+                           (escape-key-event? %) (reset-modal))]
     (fn []
       (react/useEffect #(when (show-edit-card-modal) (autofocus-modal)))
       [:div.modal {:class (when (show-edit-card-modal) "is-active")}
