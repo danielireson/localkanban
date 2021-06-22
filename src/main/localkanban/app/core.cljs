@@ -123,6 +123,9 @@
 (defn autofocus-modal []
   (.focus (.querySelector js/document ".modal.is-active input, .modal.is-active textarea")))
 
+(defn use-autofocus-modal [should-autofocus]
+  (react/useEffect #(when should-autofocus (autofocus-modal)) (clj->js [should-autofocus])))
+
 ;;; Views
 
 (defn navbar-component []
@@ -170,7 +173,7 @@
                            (enter-key-event? %) (handle-save)
                            (escape-key-event? %) (reset-modal))]
     (fn []
-      (react/useEffect #(when (show-add-list-modal) (autofocus-modal)))
+      (use-autofocus-modal (show-add-list-modal))
       [:div.modal {:class (when (show-add-list-modal) "is-active")}
        [:div.modal-background {:on-click reset-modal}]
        [:div.modal-card
@@ -198,7 +201,7 @@
                            (enter-key-event? %) (handle-save)
                            (escape-key-event? %) (reset-modal))]
     (fn []
-      (react/useEffect #(when (show-edit-list-modal) (autofocus-modal)))
+      (use-autofocus-modal (show-edit-list-modal))
       [:div.modal {:class (when (show-edit-list-modal) "is-active")}
        [:div.modal-background {:on-click reset-modal}]
        [:div.modal-card
@@ -226,7 +229,7 @@
                            (enter-key-event? %) (handle-save)
                            (escape-key-event? %) (reset-modal))]
     (fn []
-      (react/useEffect #(when (show-add-card-modal) (autofocus-modal)))
+      (use-autofocus-modal (show-add-card-modal))
       [:div.modal {:class (when (show-add-card-modal) "is-active")}
        [:div.modal-background {:on-click reset-modal}]
        [:div.modal-card
@@ -253,7 +256,7 @@
                            (enter-key-event? %) (handle-save)
                            (escape-key-event? %) (reset-modal))]
     (fn []
-      (react/useEffect #(when (show-edit-card-modal) (autofocus-modal)))
+      (use-autofocus-modal (show-edit-card-modal))
       [:div.modal {:class (when (show-edit-card-modal) "is-active")}
        [:div.modal-background {:on-click toggle-edit-card-modal}]
        [:div.modal-card
