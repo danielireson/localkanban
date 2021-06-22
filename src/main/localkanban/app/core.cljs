@@ -23,7 +23,10 @@
   (r/atom (count @kanban-board)))
 
 (defonce kanban-cards-counter
-  (r/atom (reduce (fn [kanban-list] count kanban-list :cards) @kanban-board)))
+  (r/atom (reduce
+           (fn [counter kanban-list] (+ counter (count (kanban-list :cards))))
+           0
+           (vals @kanban-board))))
 
 (defn save-kanban-board []
   (.setItem js/localStorage "localkanban:state" (.stringify js/JSON (clj->js @kanban-board))))
