@@ -114,11 +114,11 @@
   (if (show-edit-card-modal) (reset-active-ids) (set-active-card list-id card-id))
   (toggle-view-state :show-edit-card-modal))
 
-(defn enter-key-event? [e]
-  (= (.-key e) "Enter"))
+(defn enter-key-event? [event]
+  (= (.-key event) "Enter"))
 
-(defn escape-key-event? [e]
-  (or (= (.-key e) "Escape") (= (.-key e) "Esc")))
+(defn escape-key-event? [event]
+  (or (= (.-key event) "Escape") (= (.-key event) "Esc")))
 
 (defn autofocus-modal []
   (.focus (.querySelector js/document ".modal.is-active input, .modal.is-active textarea")))
