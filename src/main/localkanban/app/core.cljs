@@ -17,7 +17,7 @@
 (defonce kanban-board
   (let [saved-json (try (.getItem js/localStorage "localkanban:state") (catch js/Error _))
         saved-kanban-board (try (js->clj (.parse js/JSON saved-json) :keywordize-keys true) (catch js/Error _))]
-  (r/atom (if (pos? (count saved-kanban-board)) saved-kanban-board default-kanban-board))))
+    (r/atom (if (pos? (count saved-kanban-board)) saved-kanban-board default-kanban-board))))
 
 (defonce kanban-lists-counter
   (r/atom (count @kanban-board)))
