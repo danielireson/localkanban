@@ -163,26 +163,6 @@ See [this section](https://shadow-cljs.github.io/docs/UsersGuide.html#_clojure_r
 npm run clojure-repl
 ```
 
-### Compile tests and watch for changes
-
-(Run in a separate Terminal.) This runs the tests and watches them for changes, re-running when a change is detected.
-
-```
-npm test
-```
-
-Note: Creates an `out` folder in your project folder, containing a `node-tests.js` file.
-
-### Compile tests and run them once
-
-(Run in a separate Terminal.) This runs the tests once and then exits. This command does _not_ watch your tests for changes (use `npm test` to run tests _and_ watch for changes).
-
-```
-npm run test-once
-```
-
-Note: Creates an `out` folder in your project folder.
-
 ### Remove Generated JS Code (“Clean”)
 
 Remove (“clean”) the `public/js` folder and contents generated during compilation.
@@ -199,7 +179,7 @@ Remove all (“nuke”) of the following:
 - `.shadow-cljs` folder and contents
 - `node_modules` folder and contents
 - `package-lock.json` file (or `yarn.lock` file, if you specified the `yarn` option for your package manager)
-- `out` folder and contents (containing tests)
+- `out` folder and contents
 - `report.html` file showing release build details
 
 ```
