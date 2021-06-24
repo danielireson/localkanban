@@ -12,9 +12,8 @@
                                               "description" "Any changes you make to the kanban board are saved to local storage"}}}})
 
 (defonce kanban-board
-  (let [default-json (utils/stringify-json default-kanban-board)
-        saved-json (utils/get-storage-item "state")
-        parsed-board (if (some? saved-json) (utils/parse-json saved-json) (utils/parse-json default-json))]
+  (let [saved-json (utils/get-storage-item "state")
+        parsed-board (if (some? saved-json) (utils/parse-json saved-json) default-kanban-board)]
     (r/atom (if (some? parsed-board) parsed-board {}))))
 
 (defn kanban-lists []
