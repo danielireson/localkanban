@@ -13,8 +13,8 @@
 
 (defonce kanban-board
   (let [default-json (utils/stringify-json default-kanban-board)
-        saved-json (try (utils/get-storage-item "state") (catch js/Error _))
-        parsed-board (try (if (some? saved-json) (utils/parse-json saved-json) (utils/parse-json default-json)) (catch js/Error _))]
+        saved-json (utils/get-storage-item "state")
+        parsed-board (if (some? saved-json) (utils/parse-json saved-json) (utils/parse-json default-json))]
     (r/atom (if (some? parsed-board) parsed-board {}))))
 
 (defn kanban-lists []

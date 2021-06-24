@@ -1,16 +1,16 @@
 (ns localkanban.app.utils)
 
 (defn get-storage-item [key]
-  (.getItem js/localStorage (str "localkanban:" key)))
+  (try (.getItem js/localStorage (str "localkanban:" key)) (catch js/Error _)))
 
 (defn set-storage-item [key value]
-  (.setItem js/localStorage (str "localkanban:" key) value))
+  (try (.setItem js/localStorage (str "localkanban:" key) value) (catch js/Error _)))
 
 (defn stringify-json [x]
-  (.stringify js/JSON (clj->js x)))
+  (try (.stringify js/JSON (clj->js x)) (catch js/Error _)))
 
 (defn parse-json [x]
-  (js->clj (.parse js/JSON x)))
+  (try (js->clj (.parse js/JSON x)) (catch js/Error _)))
 
 (defn enter-key-event? [event]
   (= (.-key event) "Enter"))
