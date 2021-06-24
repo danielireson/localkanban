@@ -44,7 +44,7 @@
   (let [value (r/atom "")
         reset-modal #(do (state/toggle-add-list-modal!) (reset! value ""))
         handle-change #(reset! value (-> % .-target .-value))
-        handle-save #(do (state/add-kanban-list @value) (reset-modal))
+        handle-save #(do (state/add-kanban-list! @value) (reset-modal))
         handle-key-down #(cond
                            (utils/enter-key-event? %) (handle-save)
                            (utils/escape-key-event? %) (reset-modal))]

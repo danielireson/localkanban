@@ -37,7 +37,7 @@
 (defn save-kanban-board []
   (utils/set-storage-item "state" (utils/stringify-json @kanban-board)))
 
-(defn add-kanban-list [title]
+(defn add-kanban-list! [title]
   (let [list-id (next-kanban-list-id!)
         new-title (if (not-empty title) title "Untitled")
         new-list {"id" list-id
