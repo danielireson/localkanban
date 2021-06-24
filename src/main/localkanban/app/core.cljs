@@ -5,41 +5,55 @@
 
 ;;; State
 
-(def default-kanban-board {1 {:id 1
-                              :title "Getting started"
-                              :cards {1 {:id 1
-                                         :description "This is a sample list to show you what the kanban board looks like with cards"}
-                                      2 {:id 2
-                                         :description "Create a new list using the \"Add list\" button in the top-right hand corner"}
-                                      3 {:id 3
-                                         :description "Delete this list by clicking on \"Getting started\" and using the \"Delete\" button"}}}})
+(defn stringify-json [x]
+  (.stringify js/JSON (clj->js x)))
+
+(defn parse-json [x]
+  (js->clj (.parse js/JSON x)))
+
+(def default-kanban-board {"1" {"id" "1"
+                                "title" "Getting started"
+                                "cards" {"1" {"id" "1"
+                                              "description" "This is a sample list to show you what the kanban board looks like with cards"}
+                                         "2" {"id" "2"
+                                              "description" "Create a new list using the \"Add list\" button in the top-right hand corner"}
+                                         "3" {"id" "3"
+                                              "description" "Delete this list by clicking on \"Getting started\" and using the \"Delete\" button"}}}})
 
 (defonce kanban-board
-  (let [saved-json (try (.getItem js/localStorage "localkanban:state") (catch js/Error _))
-        saved-kanban-board (try (js->clj (.parse js/JSON saved-json) :keywordize-keys true) (catch js/Error _))]
-    (r/atom (if (pos? (count saved-kanban-board)) saved-kanban-board default-kanban-board))))
+  (let [default-json (stringify-json default-kanban-board)
+        saved-json (try (.getItem js/localStorage "localkanban:state") (catch js/Error _))
+        parsed-board (try (if (some? saved-json) (parse-json saved-json) (parse-json default-json)) (catch js/Error _))]
+    (r/atom (if (some? parsed-board) parsed-board {}))))
 
 (defonce kanban-lists-counter
   (r/atom (count @kanban-board)))
 
+(defn next-kanban-list-id []
+  (str (swap! kanban-lists-counter inc)))
+
 (defonce kanban-cards-counter
   (r/atom (reduce
-           (fn [counter kanban-list] (+ counter (count (kanban-list :cards))))
+           (fn [counter kanban-list] (+ counter (count (kanban-list "cards"))))
            0
            (vals @kanban-board))))
 
+(defn next-kanban-card-id []
+  (str (swap! kanban-cards-counter inc)))
+
 (defn save-kanban-board []
-  (.setItem js/localStorage "localkanban:state" (.stringify js/JSON (clj->js @kanban-board))))
+  (.setItem js/localStorage "localkanban:state" (stringify-json @kanban-board)))
 
 (defn add-kanban-list [title]
-  (let [list-id  (swap! kanban-lists-counter inc)
-        new-list {:id list-id
-                  :title title}]
+  (let [list-id (next-kanban-list-id)
+        new-list {"id" list-id
+                  "title" title
+                  "cards" {}}]
     (swap! kanban-board assoc list-id new-list)
     (save-kanban-board)))
 
 (defn update-kanban-list [list-id title]
-  (swap! kanban-board assoc-in [list-id :title] title)
+  (swap! kanban-board assoc-in [list-id "title"] title)
   (save-kanban-board))
 
 (defn delete-kanban-list [list-id]
@@ -47,18 +61,18 @@
   (save-kanban-board))
 
 (defn add-kanban-card [list-id description]
-  (let [card-id  (swap! kanban-cards-counter inc)
-        new-card {:id card-id
-                  :description description}]
-    (swap! kanban-board assoc-in [list-id :cards card-id] new-card)
+  (let [card-id  (next-kanban-card-id)
+        new-card {"id" card-id
+                  "description" description}]
+    (swap! kanban-board assoc-in [list-id "cards" card-id] new-card)
     (save-kanban-board)))
 
 (defn update-kanban-card [list-id card-id description]
-  (swap! kanban-board assoc-in [list-id :cards card-id :description] description)
+  (swap! kanban-board assoc-in [list-id "cards" card-id "description"] description)
   (save-kanban-board))
 
 (defn delete-kanban-card [list-id card-id]
-  (swap! kanban-board update-in [list-id :cards] dissoc card-id)
+  (swap! kanban-board update-in [list-id "cards"] dissoc card-id)
   (save-kanban-board))
 
 (def initial-view-state {:active-list-id nil
@@ -142,21 +156,21 @@
       [:button.button.is-primary {:on-click toggle-add-list-modal} "Add list"]]]]])
 
 (defn card-component [list-id kanban-card]
-  (let [handle-card #(toggle-edit-card-modal list-id (kanban-card :id))]
+  (let [handle-card #(toggle-edit-card-modal list-id (kanban-card "id"))]
     [:div.card {:on-click handle-card}
      [:div.card-content
-      [:div.content (kanban-card :description)]]]))
+      [:div.content (kanban-card "description")]]]))
 
 (defn cards-component [kanban-list]
   [:div.cards
-   (for [card (vals (kanban-list :cards))]
-     ^{:key (card :id)} [card-component (kanban-list :id) card])])
+   (for [card (vals (kanban-list "cards"))]
+     ^{:key (card "id")} [card-component (kanban-list "id") card])])
 
 (defn list-component [kanban-list]
-  (let [handle-list-title #(toggle-edit-list-modal (kanban-list :id))
-        handle-add-card #(toggle-add-card-modal (kanban-list :id))]
+  (let [handle-list-title #(toggle-edit-list-modal (kanban-list "id"))
+        handle-add-card #(toggle-add-card-modal (kanban-list "id"))]
     [:div.list
-     [:a.list-title {:on-click handle-list-title} (kanban-list :title)]
+     [:a.list-title {:on-click handle-list-title} (kanban-list "title")]
      [cards-component kanban-list]
      [:div.list-footer
       [:a {:on-click handle-add-card} "Add card"]]]))
@@ -165,7 +179,7 @@
   [:div.wrapper
    [:div.columns.is-mobile.is-vcentered
     (for [kanban-list (vals @kanban-board)]
-      ^{:key (kanban-list :id)} [:div.column [list-component kanban-list]])]])
+      ^{:key (kanban-list "id")} [:div.column [list-component kanban-list]])]])
 
 (defn add-list-modal-component []
   (let [value (r/atom "")
