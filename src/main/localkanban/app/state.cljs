@@ -5,11 +5,11 @@
 (def default-kanban-board {"1" {"id" "1"
                                 "title" "Getting started"
                                 "cards" {"1" {"id" "1"
-                                              "description" "This is a sample list to show you what the kanban board looks like with cards"}
-                                         "2" {"id" "2"
                                               "description" "Create a new list using the \"Add list\" button in the top-right hand corner"}
+                                         "2" {"id" "2"
+                                              "description" "Delete this list by clicking on \"Getting started\" and using the \"Delete\" button"}
                                          "3" {"id" "3"
-                                              "description" "Delete this list by clicking on \"Getting started\" and using the \"Delete\" button"}}}})
+                                              "description" "Any changes you make to the kanban board are saved to local storage"}}}})
 
 (defonce kanban-board
   (let [default-json (utils/stringify-json default-kanban-board)
