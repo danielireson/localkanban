@@ -7,7 +7,7 @@
                                 "cards" {"1" {"id" "1"
                                               "description" "Create a new list using the \"Add list\" button in the top-right hand corner"}
                                          "2" {"id" "2"
-                                              "description" "Delete this list by clicking on \"Getting started\" and using the \"Delete\" button"}
+                                              "description" "Delete this list by clicking on \"Getting started\" and choosing \"Delete\""}
                                          "3" {"id" "3"
                                               "description" "Any changes you make to the kanban board are saved to local storage"}}}})
 
