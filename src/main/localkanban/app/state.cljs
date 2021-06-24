@@ -16,6 +16,9 @@
         parsed-board (if (some? saved-json) (utils/parse-json saved-json) default-kanban-board)]
     (r/atom (if (some? parsed-board) parsed-board {}))))
 
+(defn save-kanban-board []
+  (utils/set-storage-item "state" (utils/stringify-json @kanban-board)))
+
 (defonce kanban-lists-counter
   (r/atom (count @kanban-board)))
 
@@ -30,12 +33,6 @@
 
 (defn next-kanban-card-id! []
   (str (swap! kanban-cards-counter inc)))
-
-(defn kanban-lists []
-  (vals @kanban-board))
-
-(defn save-kanban-board []
-  (utils/set-storage-item "state" (utils/stringify-json @kanban-board)))
 
 (defn add-kanban-list! [title]
   (let [list-id (next-kanban-list-id!)
@@ -78,6 +75,9 @@
                          :show-edit-card-modal false})
 
 (defonce view-state (r/atom initial-view-state))
+
+(defn kanban-lists []
+  (vals @kanban-board))
 
 (defn active-list-id []
   (@view-state :active-list-id))
