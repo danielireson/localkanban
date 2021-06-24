@@ -68,15 +68,16 @@
          [:button.button.is-primary {:on-click handle-save} "Save"]]]])))
 
 (defn- edit-list-modal-component []
-  (let [value (r/atom "")
-        reset-modal #(do (state/toggle-edit-list-modal! (state/active-list-id)) (reset! value ""))
+  (let [value (r/atom nil)
+        default-value #(when (some? %) (% "title"))
+        reset-modal #(do (state/toggle-edit-list-modal! (state/active-list-id)) (reset! value nil))
         handle-change #(reset! value (-> % .-target .-value))
-        handle-save #(do (state/update-kanban-list! (state/active-list-id) @value) (reset-modal))
+        handle-save #(do (when (string? @value) (state/update-kanban-list! (state/active-list-id) @value)) (reset-modal))
         handle-delete #(do (state/delete-kanban-list! (state/active-list-id)) (reset-modal))
         handle-key-down #(cond
                            (utils/enter-key-event? %) (handle-save)
                            (utils/escape-key-event? %) (reset-modal))]
-    (fn []
+    (fn [active-list]
       (hooks/use-autofocus-modal (state/show-edit-list-modal))
       [:div.modal {:class (when (state/show-edit-list-modal) "is-active")}
        [:div.modal-background {:on-click reset-modal}]
@@ -88,7 +89,7 @@
         [:section.modal-card-body
          [:p
           [:input.input {:type "text"
-                         :value @value
+                         :value (if (string? @value) @value (default-value active-list))
                          :placeholder "Enter list name"
                          :on-change handle-change
                          :on-key-down handle-key-down}]]]
@@ -123,15 +124,16 @@
          [:button.button.is-primary {:on-click handle-save} "Save"]]]])))
 
 (defn- edit-card-modal-component []
-  (let [value (r/atom "")
-        reset-modal #(do (state/toggle-edit-card-modal! (state/active-list-id) (state/active-card-id)) (reset! value ""))
+  (let [value (r/atom nil)
+        default-value #(when (some? %) (% "description"))
+        reset-modal #(do (state/toggle-edit-card-modal! (state/active-list-id) (state/active-card-id)) (reset! value nil))
         handle-change #(reset! value (-> % .-target .-value))
-        handle-save #(do (state/update-kanban-card! (state/active-list-id) (state/active-card-id) @value) (reset-modal))
+        handle-save #(do (when (string? @value) (state/update-kanban-card! (state/active-list-id) (state/active-card-id) @value)) (reset-modal))
         handle-delete #(do (state/delete-kanban-card! (state/active-list-id) (state/active-card-id)) (reset-modal))
         handle-key-down #(cond
                            (utils/enter-key-event? %) (handle-save)
                            (utils/escape-key-event? %) (reset-modal))]
-    (fn []
+    (fn [active-card]
       (hooks/use-autofocus-modal (state/show-edit-card-modal))
       [:div.modal {:class (when (state/show-edit-card-modal) "is-active")}
        [:div.modal-background {:on-click state/toggle-edit-card-modal!}]
@@ -142,7 +144,7 @@
                           :aria-label "close"}]]
         [:section.modal-card-body
          [:p
-          [:textarea.textarea {:value @value
+          [:textarea.textarea {:value (if (string? @value) @value (default-value active-card))
                                :placeholder "Enter card description"
                                :on-change handle-change
                                :on-key-down handle-key-down}]]]
@@ -155,6 +157,6 @@
    [navbar-component]
    [lists-component]
    [:f> add-list-modal-component]
-   [:f> edit-list-modal-component]
+   [:f> edit-list-modal-component (state/active-list)]
    [:f> add-card-modal-component]
-   [:f> edit-card-modal-component]])
+   [:f> edit-card-modal-component (state/active-card)]])
