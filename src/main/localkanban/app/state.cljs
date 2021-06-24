@@ -39,15 +39,17 @@
 
 (defn add-kanban-list [title]
   (let [list-id (next-kanban-list-id!)
+        new-title (if (not-empty title) title "Untitled")
         new-list {"id" list-id
-                  "title" title
+                  "title" new-title
                   "cards" {}}]
     (swap! kanban-board assoc list-id new-list)
     (save-kanban-board)))
 
 (defn update-kanban-list! [list-id title]
-  (swap! kanban-board assoc-in [list-id "title"] title)
-  (save-kanban-board))
+  (let [new-title (if (not-empty title) title "Untitled")]
+    (swap! kanban-board assoc-in [list-id "title"] new-title)
+    (save-kanban-board)))
 
 (defn delete-kanban-list! [list-id]
   (swap! kanban-board dissoc list-id)
