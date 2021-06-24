@@ -69,7 +69,7 @@
 
 (defn- edit-list-modal-component []
   (let [value (r/atom nil)
-        default-value #(when (some? %) (% "title"))
+        value-or-default #(or @value (when (some? %) (% "title")))
         reset-modal #(do (state/toggle-edit-list-modal! (state/active-list-id)) (reset! value nil))
         handle-change #(reset! value (-> % .-target .-value))
         handle-save #(do (when (string? @value) (state/update-kanban-list! (state/active-list-id) @value)) (reset-modal))
@@ -89,7 +89,7 @@
         [:section.modal-card-body
          [:p
           [:input.input {:type "text"
-                         :value (if (string? @value) @value (default-value active-list))
+                         :value (value-or-default active-list)
                          :placeholder "Enter list name"
                          :on-change handle-change
                          :on-key-down handle-key-down}]]]
@@ -125,7 +125,7 @@
 
 (defn- edit-card-modal-component []
   (let [value (r/atom nil)
-        default-value #(when (some? %) (% "description"))
+        value-or-default #(or @value (when (some? %) (% "description")))
         reset-modal #(do (state/toggle-edit-card-modal! (state/active-list-id) (state/active-card-id)) (reset! value nil))
         handle-change #(reset! value (-> % .-target .-value))
         handle-save #(do (when (string? @value) (state/update-kanban-card! (state/active-list-id) (state/active-card-id) @value)) (reset-modal))
@@ -144,7 +144,7 @@
                           :aria-label "close"}]]
         [:section.modal-card-body
          [:p
-          [:textarea.textarea {:value (if (string? @value) @value (default-value active-card))
+          [:textarea.textarea {:value (value-or-default active-card)
                                :placeholder "Enter card description"
                                :on-change handle-change
                                :on-key-down handle-key-down}]]]
