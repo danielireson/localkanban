@@ -13,7 +13,7 @@
 
 (defonce kanban-board
   (let [default-json (utils/stringify-json default-kanban-board)
-        saved-json (try (.getItem js/localStorage "localkanban:state") (catch js/Error _))
+        saved-json (try (utils/get-storage-item "state") (catch js/Error _))
         parsed-board (try (if (some? saved-json) (utils/parse-json saved-json) (utils/parse-json default-json)) (catch js/Error _))]
     (r/atom (if (some? parsed-board) parsed-board {}))))
 
@@ -33,7 +33,7 @@
   (str (swap! kanban-cards-counter inc)))
 
 (defn save-kanban-board []
-  (.setItem js/localStorage "localkanban:state" (utils/stringify-json @kanban-board)))
+  (utils/set-storage-item "state" (utils/stringify-json @kanban-board)))
 
 (defn add-kanban-list [title]
   (let [list-id (next-kanban-list-id!)

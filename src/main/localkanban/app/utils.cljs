@@ -1,5 +1,11 @@
 (ns localkanban.app.utils)
 
+(defn get-storage-item [key]
+  (.getItem js/localStorage (str "localkanban:" key)))
+
+(defn set-storage-item [key value]
+  (.setItem js/localStorage (str "localkanban:" key) value))
+
 (defn stringify-json [x]
   (.stringify js/JSON (clj->js x)))
 
