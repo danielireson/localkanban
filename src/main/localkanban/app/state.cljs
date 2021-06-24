@@ -93,9 +93,6 @@
 (defn show-edit-card-modal []
   (@view-state :show-edit-card-modal))
 
-(defn toggle-view-state! [key]
-  (swap! view-state update key not))
-
 (defn set-active-list! [list-id]
   (swap! view-state assoc :active-list-id list-id))
 
@@ -104,6 +101,9 @@
 
 (defn reset-active-ids! []
   (swap! view-state assoc :active-list-id nil :active-card-id nil))
+
+(defn- toggle-view-state! [key]
+  (swap! view-state update key not))
 
 (defn toggle-add-list-modal! []
   (toggle-view-state! :show-add-list-modal))

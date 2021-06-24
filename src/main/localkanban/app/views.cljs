@@ -4,7 +4,7 @@
             [localkanban.app.hooks :as hooks]
             [localkanban.app.utils :as utils]))
 
-(defn navbar-component []
+(defn- navbar-component []
   [:nav.navbar {:role "navigation"
                 :aria-label "navigation"}
    [:div.navbar-brand
@@ -14,18 +14,18 @@
      [:div.buttons
       [:button.button.is-primary {:on-click state/toggle-add-list-modal!} "Add list"]]]]])
 
-(defn card-component [list-id kanban-card]
+(defn- card-component [list-id kanban-card]
   (let [handle-card #(state/toggle-edit-card-modal! list-id (kanban-card "id"))]
     [:div.card {:on-click handle-card}
      [:div.card-content
       [:div.content (kanban-card "description")]]]))
 
-(defn cards-component [kanban-list]
+(defn- cards-component [kanban-list]
   [:div.cards
    (for [card (vals (kanban-list "cards"))]
      ^{:key (card "id")} [card-component (kanban-list "id") card])])
 
-(defn list-component [kanban-list]
+(defn- list-component [kanban-list]
   (let [handle-list-title #(state/toggle-edit-list-modal! (kanban-list "id"))
         handle-add-card #(state/toggle-add-card-modal! (kanban-list "id"))]
     [:div.list
@@ -34,13 +34,13 @@
      [:div.list-footer
       [:a {:on-click handle-add-card} "Add card"]]]))
 
-(defn lists-component []
+(defn- lists-component []
   [:div.wrapper
    [:div.columns.is-mobile.is-vcentered
     (for [kanban-list (vals @state/kanban-board)]
       ^{:key (kanban-list "id")} [:div.column [list-component kanban-list]])]])
 
-(defn add-list-modal-component []
+(defn- add-list-modal-component []
   (let [value (r/atom "")
         reset-modal #(do (state/toggle-add-list-modal!) (reset! value ""))
         handle-change #(reset! value (-> % .-target .-value))
@@ -67,7 +67,7 @@
         [:footer.modal-card-foot
          [:button.button.is-primary {:on-click handle-save} "Save"]]]])))
 
-(defn edit-list-modal-component []
+(defn- edit-list-modal-component []
   (let [value (r/atom "")
         reset-modal #(do (state/toggle-edit-list-modal! (state/active-list-id)) (reset! value ""))
         handle-change #(reset! value (-> % .-target .-value))
@@ -96,7 +96,7 @@
          [:button.button.is-primary {:on-click handle-save} "Save"]
          [:button.button.is-danger {:on-click handle-delete} "Delete"]]]])))
 
-(defn add-card-modal-component []
+(defn- add-card-modal-component []
   (let [value (r/atom "")
         reset-modal #(do (state/toggle-add-card-modal! (state/active-list-id)) (reset! value ""))
         handle-change #(reset! value (-> % .-target .-value))
@@ -122,7 +122,7 @@
         [:footer.modal-card-foot
          [:button.button.is-primary {:on-click handle-save} "Save"]]]])))
 
-(defn edit-card-modal-component []
+(defn- edit-card-modal-component []
   (let [value (r/atom "")
         reset-modal #(do (state/toggle-edit-card-modal! (state/active-list-id) (state/active-card-id)) (reset! value ""))
         handle-change #(reset! value (-> % .-target .-value))
