@@ -17,6 +17,9 @@
         parsed-board (try (if (some? saved-json) (utils/parse-json saved-json) (utils/parse-json default-json)) (catch js/Error _))]
     (r/atom (if (some? parsed-board) parsed-board {}))))
 
+(defn kanban-lists []
+  (vals @kanban-board))
+
 (defonce kanban-lists-counter
   (r/atom (count @kanban-board)))
 

@@ -37,7 +37,7 @@
 (defn- lists-component []
   [:div.wrapper
    [:div.columns.is-mobile.is-vcentered
-    (for [kanban-list (vals @state/kanban-board)]
+    (for [kanban-list (state/kanban-lists)]
       ^{:key (kanban-list "id")} [:div.column [list-component kanban-list]])]])
 
 (defn- add-list-modal-component []
