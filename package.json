@@ -22,13 +22,13 @@
     "shadow-cljs-server": "shadow-cljs server"
   },
   "devDependencies": {
-    "bulma": "^0.9.2",
     "node-sass": "^6.0.0",
     "rimraf": "^3.0.2",
     "serve": "^11.3.2",
     "shadow-cljs": "2.11.18"
   },
   "dependencies": {
+    "bulma": "^0.9.3",
     "react": "17.0.1",
     "react-dom": "17.0.1"
   }
