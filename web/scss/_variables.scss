@@ -2,6 +2,10 @@
 $primary: #3273dc;
 $danger: #d63031;
 $dark: #2f3542;
+$shadow-light: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1),
+  0 0 0 1px rgba(10, 10, 10, 0.02);
+$shadow-dark: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.2),
+  0 0 0 1px rgba(10, 10, 10, 0.02);
 
 // TEXT
 $link: $primary;
