@@ -11,9 +11,9 @@
     "build-app-verbose": "shadow-cljs release --verbose app",
     "build-css": "node-sass web/scss --output web/css --output-style compressed",
     "build": "npm run build-app && npm run build-css",
+    "serve": "NODE_ENV=production ./bin/www",
     "report": "shadow-cljs run shadow.cljs.build-report app report.html",
     "debug-build": "shadow-cljs release app --debug",
-    "serve": "serve --single web --listen 5000",
     "dev-build": "shadow-cljs compile app",
     "repl": "shadow-cljs cljs-repl app",
     "browser-repl": "shadow-cljs browser-repl",
@@ -24,12 +24,12 @@
   "devDependencies": {
     "node-sass": "^6.0.0",
     "rimraf": "^3.0.2",
-    "serve": "^11.3.2",
     "shadow-cljs": "2.11.18"
   },
   "dependencies": {
     "bulma": "^0.9.3",
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "serve": "^11.3.2"
   }
 }

@@ -16,10 +16,14 @@ RUN npm ci
 
 RUN npm run build
 
-RUN adduser --disabled-login web
+RUN adduser --disabled-login node
 
-USER web
+USER node
+
+ENV NODE_ENV production
+
+ENV PORT 5200
 
 EXPOSE 5200
 
-CMD node node_modules/serve/bin/serve.js --single web --listen 5200
+CMD bin/www

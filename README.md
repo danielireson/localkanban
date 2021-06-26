@@ -32,7 +32,7 @@ npm install
 npm run build
 ```
 
-This builds the client app to `/web` ready for deploy to a static site host.
+This builds the client app to `/web` ready for deploy to a static site host. A Dockerfile has also been included for building and launching the app in container environments using an integrated Node.js server.
 
 ## Future
 
