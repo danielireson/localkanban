@@ -22,8 +22,8 @@ USER node
 
 ENV NODE_ENV production
 
-ENV PORT 5200
+ENV PORT 3000
 
-EXPOSE 5200
+EXPOSE 3000
 
 CMD bin/www
