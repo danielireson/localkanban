@@ -17,7 +17,7 @@ const port = normalizePort(process.env.PORT || "3000");
  */
 const server = http.createServer((request, response) => {
   return handler(request, response, {
-    public: path.join(__dirname, "../web"),
+    public: path.join(__dirname, "../public"),
     cleanUrls: true,
     directoryListing: false,
   });

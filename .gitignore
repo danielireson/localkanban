@@ -21,6 +21,6 @@ report.html
 /.calva
 
 # dist
-/web/js
-/web/css
+/public/js
+/public/css
 /out
