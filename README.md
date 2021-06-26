@@ -2,6 +2,8 @@
 
 Private kanban board that saves to local storage.
 
+![Screenshot 2021-06-26 at 15:46:11](https://user-images.githubusercontent.com/9462036/123516718-6e10d480-d695-11eb-81c7-f3f8789f7c44.png)
+
 ## Technology
 
 Shadow CLJS, ClojureScript, Reagent.
