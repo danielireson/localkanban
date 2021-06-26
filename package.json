@@ -9,7 +9,7 @@
     "watch": "npm run watch-app & npm run watch-css",
     "build-app": "shadow-cljs release app",
     "build-app-verbose": "shadow-cljs release --verbose app",
-    "build-css": "node-sass web/scss --output web/css --output-style compressed",
+    "build-css": "node-sass src/main/localkanban/styles --output web/css --output-style compressed",
     "build": "npm run build-app && npm run build-css",
     "serve": "NODE_ENV=production ./bin/www",
     "report": "shadow-cljs run shadow.cljs.build-report app report.html",
