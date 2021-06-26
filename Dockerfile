@@ -16,7 +16,7 @@ RUN npm ci
 
 RUN npm run build
 
-RUN adduser --disabled-login node
+RUN adduser --disabled-login --gecos '' node
 
 USER node
 
